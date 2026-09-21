@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useRef } from "react";
-import { ChevronLeft, ChevronRight, Check, Star, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, Star } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAdminData } from "@/context/AdminDataContext";
 import { Product } from "@/data/products";
 
 export interface OfferProductItem {
@@ -114,7 +115,8 @@ export const OFFER_PRODUCTS: OfferProductItem[] = [
 
 export const OfferProducts: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const { setQuickViewProduct, addToCart } = useCart();
+  const { setQuickViewProduct } = useCart();
+  const { offerProducts } = useAdminData();
 
   const handleScroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -122,6 +124,8 @@ export const OfferProducts: React.FC = () => {
       scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
+
+  const itemsToRender = offerProducts && offerProducts.length > 0 ? offerProducts : OFFER_PRODUCTS;
 
   const handleProductClick = (item: OfferProductItem) => {
     // Map OfferProductItem to standard Product context type for quick view/cart
@@ -182,7 +186,7 @@ export const OfferProducts: React.FC = () => {
           className="flex items-stretch gap-4 sm:gap-5 overflow-x-auto scrollbar-none py-2 px-1 scroll-smooth"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {OFFER_PRODUCTS.map((item) => (
+          {itemsToRender.map((item) => (
             <div
               key={item.id}
               onClick={() => handleProductClick(item)}

@@ -3,10 +3,14 @@
 import React from "react";
 import { CATEGORIES, Category } from "@/data/categories";
 import { useCart } from "@/context/CartContext";
+import { useAdminData } from "@/context/AdminDataContext";
 import { ArrowRight } from "lucide-react";
 
 export const CategoryGrid: React.FC = () => {
   const { selectedCategory, setSelectedCategory } = useCart();
+  const { categories: adminCategories } = useAdminData();
+
+  const categoriesToRender = adminCategories && adminCategories.length > 0 ? adminCategories : CATEGORIES;
 
   const handleSelect = (catId: string) => {
     setSelectedCategory(catId);
@@ -29,9 +33,9 @@ export const CategoryGrid: React.FC = () => {
         </p>
       </div>
 
-      {/* Grid of 10 Cards */}
+      {/* Grid of Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {CATEGORIES.map((cat) => {
+        {categoriesToRender.map((cat) => {
           const isSelected = selectedCategory === cat.id;
 
           return (

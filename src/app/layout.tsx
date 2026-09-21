@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { AdminDataProvider } from "@/context/AdminDataContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,9 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} scroll-smooth`}>
       <body className="font-sans bg-white text-gray-900 antialiased min-h-screen flex flex-col justify-between">
-        <CartProvider>
-          {children}
-        </CartProvider>
+        <AdminDataProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+        </AdminDataProvider>
       </body>
     </html>
   );

@@ -4,15 +4,20 @@ import React, { useState } from "react";
 import { PRODUCTS, Product } from "@/data/products";
 import { CATEGORIES } from "@/data/categories";
 import { useCart } from "@/context/CartContext";
+import { useAdminData } from "@/context/AdminDataContext";
 import { Star, ShoppingBag, Eye, Check, Filter } from "lucide-react";
 
 export const FeaturedProducts: React.FC = () => {
   const { selectedCategory, setSelectedCategory, searchQuery, addToCart, setQuickViewProduct } = useCart();
+  const { products: adminProducts, categories: adminCategories } = useAdminData();
   const [activeTab, setActiveTab] = useState<"all" | "featured" | "sale">("all");
   const [addedItem, setAddedItem] = useState<string | null>(null);
 
+  const productsToRender = adminProducts && adminProducts.length > 0 ? adminProducts : PRODUCTS;
+  const categoriesList = adminCategories && adminCategories.length > 0 ? adminCategories : CATEGORIES;
+
   // Filter products based on selectedCategory, searchQuery, and activeTab
-  const filteredProducts = PRODUCTS.filter((product) => {
+  const filteredProducts = productsToRender.filter((product) => {
     // Category filter
     if (selectedCategory !== "all" && product.category !== selectedCategory) {
       return false;
@@ -41,7 +46,7 @@ export const FeaturedProducts: React.FC = () => {
   const selectedCategoryTitle =
     selectedCategory === "all"
       ? "All Collections"
-      : CATEGORIES.find((c) => c.id === selectedCategory)?.title || "Filtered Products";
+      : categoriesList.find((c) => c.id === selectedCategory)?.title || "Filtered Products";
 
   return (
     <section id="catalog-section" className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-gray-50/50 rounded-xl my-6 border border-gray-200">
@@ -70,7 +75,7 @@ export const FeaturedProducts: React.FC = () => {
                 : "bg-white text-gray-700 hover:bg-gray-200 border border-gray-300"
             }`}
           >
-            Show All ({PRODUCTS.length})
+            Show All ({productsToRender.length})
           </button>
 
           <button

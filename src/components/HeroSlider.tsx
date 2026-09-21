@@ -1,79 +1,29 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, CircleDot } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-
-interface Hotspot {
-  x: number; // percentage
-  y: number; // percentage
-  label: string;
-  catId: string;
-}
-
-interface Slide {
-  id: string;
-  title: string;
-  highlight: string;
-  subtitle: string;
-  buttonText: string;
-  image: string;
-  hotspots: Hotspot[];
-}
-
-const SLIDES: Slide[] = [
-  {
-    id: "slide-1",
-    title: "EXPLORE OUR LATEST",
-    highlight: "FLUTED PANELS & BOARDS",
-    subtitle: "COLLECTION",
-    buttonText: "Shop Now",
-    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1600",
-    hotspots: [
-      { x: 62, y: 22, label: "Carbon Crystal Wall Panel", catId: "decorative" },
-      { x: 58, y: 44, label: "Fluted Wall Panel", catId: "decorative" },
-      { x: 56, y: 65, label: "MFC / MDF Boards", catId: "decorative" }
-    ]
-  },
-  {
-    id: "slide-2",
-    title: "NEXT-GEN BIOMETRIC & SMART",
-    highlight: "ARCHITECTURAL LOCKS",
-    subtitle: "FOR MODERN SECURITY",
-    buttonText: "Discover Locks",
-    image: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=1600",
-    hotspots: [
-      { x: 50, y: 35, label: "Fingerprint 3D Mortise Lock", catId: "smart-living" },
-      { x: 72, y: 55, label: "Silent Brass Hinges", catId: "architectural-hardware" }
-    ]
-  },
-  {
-    id: "slide-3",
-    title: "LUXURY KITCHEN & SANITARY",
-    highlight: "FITTINGS & HARDWARE",
-    subtitle: "CRAFTED FOR ELEGANCE",
-    buttonText: "Explore Fittings",
-    image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=1600",
-    hotspots: [
-      { x: 45, y: 40, label: "Matte Black Pull-down Tap", catId: "kitchen-fittings" },
-      { x: 68, y: 70, label: "Soft-Close Cabinet Drawer System", catId: "furniture-hardware" }
-    ]
-  }
-];
+import { useAdminData } from "@/context/AdminDataContext";
 
 export const HeroSlider: React.FC = () => {
+  const { slides } = useAdminData();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
   const { setSelectedCategory } = useCart();
 
   useEffect(() => {
+    if (slides.length === 0) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
-  const slide = SLIDES[currentSlide];
+  if (!slides || slides.length === 0) {
+    return null;
+  }
+
+  const slide = slides[currentSlide] || slides[0];
 
   const handleHotspotClick = (catId: string) => {
     setSelectedCategory(catId);
@@ -156,7 +106,7 @@ export const HeroSlider: React.FC = () => {
         {/* Bottom Carousel Navigation Controls */}
         <div className="relative z-20 pb-4 flex items-center justify-center gap-3 text-white">
           <button
-            onClick={() => setCurrentSlide((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1))}
+            onClick={() => setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))}
             aria-label="Previous Slide"
             className="p-1 rounded-full hover:bg-white/20 transition-colors"
           >
@@ -164,7 +114,7 @@ export const HeroSlider: React.FC = () => {
           </button>
 
           <div className="flex items-center gap-2">
-            {SLIDES.map((_, index) => (
+            {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
@@ -177,7 +127,7 @@ export const HeroSlider: React.FC = () => {
           </div>
 
           <button
-            onClick={() => setCurrentSlide((prev) => (prev + 1) % SLIDES.length)}
+            onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
             aria-label="Next Slide"
             className="p-1 rounded-full hover:bg-white/20 transition-colors"
           >
