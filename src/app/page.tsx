@@ -3,6 +3,7 @@
 import { Header } from "@/components/Header";
 import { Navbar } from "@/components/Navbar";
 import { HeroSlider } from "@/components/HeroSlider";
+import { OfferProducts } from "@/components/OfferProducts";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { CartDrawer } from "@/components/CartDrawer";
@@ -20,6 +21,9 @@ export default function Home() {
 
       {/* Main Hero Slider Banner */}
       <HeroSlider />
+
+      {/* Offers Products Topic with Cards & Horizontal Arrow Navigation */}
+      <OfferProducts />
 
       {/* 10 Category Grid Cards matching reference image */}
       <CategoryGrid />

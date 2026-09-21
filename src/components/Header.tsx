@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Search, Phone, Mail, User, ShoppingCart, ChevronDown } from "lucide-react";
+import { Search, User, ShoppingCart, ChevronDown } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { CATEGORIES } from "@/data/categories";
 
@@ -68,17 +68,6 @@ export const Header: React.FC = () => {
 
         {/* Right Info & Actions */}
         <div className="flex items-center gap-5 text-gray-700">
-          
-          {/* Phone & Email Contact */}
-          <div className="hidden lg:flex items-center gap-2.5 border-r border-gray-200 pr-5">
-            <Phone className="w-4 h-4 text-gray-800" />
-            <div className="flex flex-col text-[11px] leading-snug">
-              <a href="tel:+94759520480" className="font-bold text-gray-900 hover:text-red-700 transition-colors">
-                +94759520480
-              </a>
-              <span className="text-gray-500 font-medium">info@noorbhoy.com</span>
-            </div>
-          </div>
 
           {/* User Account */}
           <button 
