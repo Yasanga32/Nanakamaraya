@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, Menu, X, Tag } from "lucide-react";
+import Link from "next/link";
+import { ChevronDown, Menu, X, Tag, Settings } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
 import { useCart } from "@/context/CartContext";
 
@@ -101,18 +102,29 @@ export const Navbar: React.FC = () => {
           </button>
         </div>
 
-        {/* Special Offers Red Accent Button (Far Right) */}
-        <button
-          onClick={() => {
-            setSelectedCategory("all");
-            const catalogSection = document.getElementById("catalog-section");
-            if (catalogSection) catalogSection.scrollIntoView({ behavior: "smooth" });
-          }}
-          className="bg-[#c83232] hover:bg-[#a52424] text-white px-5 py-3 text-xs font-extrabold uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-inner"
-        >
-          <Tag className="w-3.5 h-3.5 hidden sm:inline" />
-          <span>SPECIAL OFFERS</span>
-        </button>
+        {/* Action Buttons (Far Right) */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin"
+            className="bg-[#23252a] hover:bg-gray-700 text-gray-200 hover:text-white px-3.5 py-3 text-xs font-extrabold uppercase tracking-wider transition-colors flex items-center gap-1.5 border-r border-gray-600/50"
+            title="Open Admin Panel"
+          >
+            <Settings className="w-3.5 h-3.5 text-red-500" />
+            <span className="hidden sm:inline">ADMIN PANEL</span>
+          </Link>
+
+          <button
+            onClick={() => {
+              setSelectedCategory("all");
+              const catalogSection = document.getElementById("catalog-section");
+              if (catalogSection) catalogSection.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="bg-[#c83232] hover:bg-[#a52424] text-white px-5 py-3 text-xs font-extrabold uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-inner"
+          >
+            <Tag className="w-3.5 h-3.5 hidden sm:inline" />
+            <span>SPECIAL OFFERS</span>
+          </button>
+        </div>
 
       </div>
 
