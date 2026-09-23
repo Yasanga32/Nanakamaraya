@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, Mail, MapPin, Send, Check } from "lucide-react";
+import { Phone, Mail, MapPin, Send, Check, Clock } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
 import { useCart } from "@/context/CartContext";
 
@@ -48,19 +48,35 @@ export const Footer: React.FC = () => {
               Established in 1902, M.M. Noorbhoy & Co is Sri Lanka&apos;s premier destination for luxury architectural hardware, bathroom fittings, acoustic wall panels, and smart home solutions.
             </p>
 
-            <div className="space-y-2 text-xs text-gray-300">
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-red-500" />
-                <a href="tel:+94759520480" className="hover:text-white transition-colors font-bold">+94 75 952 0480</a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-red-500" />
-                <a href="mailto:info@noorbhoy.com" className="hover:text-white transition-colors">info@noorbhoy.com</a>
-              </div>
+            <div className="space-y-2.5 text-xs text-gray-300">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                <span>124 Baseline Road, Colombo 09, Sri Lanka</span>
+                <span>Galwana Junction, Angoda, Sri Lanka</span>
               </div>
+
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-red-500 shrink-0" />
+                <div className="flex flex-wrap items-center gap-1 font-bold">
+                  <a href="tel:072211324" className="hover:text-white transition-colors">072211324</a>
+                  <span className="text-gray-500">/</span>
+                  <a href="tel:0754232212" className="hover:text-white transition-colors">0754232212</a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-red-500 shrink-0" />
+                <a href="mailto:newliyanage@gmail.com" className="hover:text-white transition-colors">newliyanage@gmail.com</a>
+              </div>
+            </div>
+
+            {/* Trade Counter Hours */}
+            <div className="pt-2 border-t border-gray-800 text-xs text-gray-400 space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-gray-200">
+                <Clock className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                <span>Trade Counter Hours:</span>
+              </div>
+              <p className="text-[11px] pl-5 text-gray-300">Mon – Sat: 8:00 AM – 6:00 PM</p>
+              <p className="text-[11px] pl-5 text-gray-300">Sunday: 8:00 AM – 1:00 PM</p>
             </div>
           </div>
 
