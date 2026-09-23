@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useAdminData } from "@/context/AdminDataContext";
 import { Product } from "@/data/products";
+import { ImageUploader } from "./ImageUploader";
 import { Plus, Edit2, Trash2, Package, X } from "lucide-react";
 
 export const ProductCatalogManager: React.FC = () => {
@@ -184,16 +185,11 @@ export const ProductCatalogManager: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-gray-700 mb-1">Image URL</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.image}
-                  onChange={e => setFormData({ ...formData, image: e.target.value })}
-                  className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-600 focus:outline-none"
-                />
-              </div>
+              <ImageUploader
+                value={formData.image}
+                onChange={url => setFormData({ ...formData, image: url })}
+                label="Product Image"
+              />
 
               <div className="pt-4 flex justify-end gap-3 border-t">
                 <button

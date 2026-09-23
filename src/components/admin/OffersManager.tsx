@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useAdminData } from "@/context/AdminDataContext";
 import { OfferProductItem } from "@/components/OfferProducts";
+import { ImageUploader } from "./ImageUploader";
 import { Plus, Edit2, Trash2, Check, X, Star, Sparkles } from "lucide-react";
 
 export const OffersManager: React.FC = () => {
@@ -129,14 +130,15 @@ export const OffersManager: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-1">Badge Tag (Optional)</label>
+                  <label className="block text-gray-700 mb-1">Offer Discount Badge (Percentage)</label>
                   <input
                     type="text"
                     value={formData.badge}
                     onChange={e => setFormData({ ...formData, badge: e.target.value })}
                     className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-600 focus:outline-none"
-                    placeholder="NEW / OFFER / HOT"
+                    placeholder="e.g. -15% or 20% OFF or NEW"
                   />
+                  <span className="text-[10px] text-gray-400 font-normal">Shown as red offer label on product card</span>
                 </div>
               </div>
 
@@ -165,16 +167,11 @@ export const OffersManager: React.FC = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-gray-700 mb-1">Image URL</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.image}
-                  onChange={e => setFormData({ ...formData, image: e.target.value })}
-                  className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-600 focus:outline-none"
-                />
-              </div>
+              <ImageUploader
+                value={formData.image}
+                onChange={url => setFormData({ ...formData, image: url })}
+                label="Offer Product Image"
+              />
 
               <div className="flex items-center gap-4 pt-2">
                 <label className="flex items-center gap-2 cursor-pointer">

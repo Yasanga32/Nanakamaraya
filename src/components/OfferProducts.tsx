@@ -28,6 +28,7 @@ export const OFFER_PRODUCTS: OfferProductItem[] = [
     numericPrice: 29850,
     inStock: true,
     rating: 5,
+    badge: "-15%",
     image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=800",
     specs: {
       "Material": "Carbon Steel & Wood",
@@ -43,6 +44,7 @@ export const OFFER_PRODUCTS: OfferProductItem[] = [
     numericPrice: 14950,
     inStock: true,
     rating: 5,
+    badge: "-20%",
     image: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=800",
     specs: {
       "Material": "Carbon Steel",
@@ -58,7 +60,7 @@ export const OFFER_PRODUCTS: OfferProductItem[] = [
     numericPrice: 38450,
     inStock: true,
     rating: 5,
-    badge: "NEW",
+    badge: "-25%",
     image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=800",
     specs: {
       "Dimensions": "L120 x D40 x H180 cm",
@@ -74,7 +76,7 @@ export const OFFER_PRODUCTS: OfferProductItem[] = [
     numericPrice: 24650,
     inStock: true,
     rating: 5,
-    badge: "NEW",
+    badge: "-12%",
     image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=800",
     specs: {
       "Dimensions": "L70 x D40 x H180 cm",
@@ -90,7 +92,7 @@ export const OFFER_PRODUCTS: OfferProductItem[] = [
     numericPrice: 32500,
     inStock: true,
     rating: 5,
-    badge: "OFFER",
+    badge: "-18%",
     image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=800",
     specs: {
       "Material": "Carbon Steel & Acrylic Door",
@@ -105,6 +107,7 @@ export const OFFER_PRODUCTS: OfferProductItem[] = [
     numericPrice: 11800,
     inStock: true,
     rating: 5,
+    badge: "-30%",
     image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=800",
     specs: {
       "Material": "Heavy Duty Steel",
@@ -200,9 +203,9 @@ export const OfferProducts: React.FC = () => {
                     alt={item.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  {/* Circular Red Badge (e.g. NEW or OFFER) top-left */}
+                  {/* Offer Discount Badge top-left */}
                   {item.badge && (
-                    <span className="absolute top-2.5 left-2.5 bg-[#c83232] text-white text-[9px] font-black rounded-full w-7 h-7 flex items-center justify-center uppercase shadow-sm tracking-tighter">
+                    <span className="absolute top-2.5 left-2.5 bg-red-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-md tracking-wider flex items-center justify-center uppercase border border-red-700/80">
                       {item.badge}
                     </span>
                   )}
