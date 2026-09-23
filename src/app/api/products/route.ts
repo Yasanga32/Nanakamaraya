@@ -8,6 +8,7 @@ export async function GET() {
     const formatted = rows.map((row: any) => ({
       ...row,
       inStock: Boolean(row.inStock),
+      isOffer: Boolean(row.isOffer),
       images: typeof row.images === "string" ? JSON.parse(row.images) : (row.images || [row.image]),
       specs: typeof row.specs === "string" ? JSON.parse(row.specs) : (row.specs || {})
     }));
@@ -21,11 +22,11 @@ export async function POST(req: Request) {
   try {
     await initDB();
     const body = await req.json();
-    const { name, category, price, originalPrice, rating, reviewsCount, image, images, description, badge, inStock, sku, specs } = body;
+    const { name, category, price, originalPrice, rating, reviewsCount, image, images, description, badge, isOffer, inStock, sku, specs } = body;
     const prodId = body.id || `prod-${Date.now()}`;
 
     await pool.query(
-      "INSERT INTO products (id, name, category, price, originalPrice, rating, reviewsCount, image, images, description, badge, inStock, sku, specs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO products (id, name, category, price, originalPrice, rating, reviewsCount, image, images, description, badge, isOffer, inStock, sku, specs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         prodId,
         name,
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
         JSON.stringify(images || [image]),
         description || "",
         badge || null,
+        isOffer ? 1 : 0,
         inStock ? 1 : 0,
         sku || "",
         JSON.stringify(specs || {})

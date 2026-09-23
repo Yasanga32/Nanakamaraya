@@ -154,6 +154,7 @@ export async function initDB() {
           images JSON,
           description TEXT,
           badge VARCHAR(100),
+          isOffer TINYINT(1) DEFAULT 0,
           inStock TINYINT(1) DEFAULT 1,
           sku VARCHAR(100),
           specs JSON,
@@ -161,12 +162,14 @@ export async function initDB() {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
       `);
 
-      // Migration: Add images column if missing in existing database
+      // Migration: Add images & isOffer columns if missing in existing database
       try {
         await connection.query("ALTER TABLE products ADD COLUMN images JSON");
-      } catch (e) {
-        // Column already exists or error ignored
-      }
+      } catch (e) {}
+
+      try {
+        await connection.query("ALTER TABLE products ADD COLUMN isOffer TINYINT(1) DEFAULT 0");
+      } catch (e) {}
 
       // --- Seed initial data if tables are empty ---
 

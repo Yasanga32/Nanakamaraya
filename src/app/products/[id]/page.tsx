@@ -33,7 +33,7 @@ export default function ProductDetailPage() {
   const productId = params?.id as string;
 
   const { addToCart, setIsCartOpen, setQuickViewProduct } = useCart();
-  const { products: adminProducts, categories } = useAdminData();
+  const { products: adminProducts, offerProducts, categories } = useAdminData();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -41,26 +41,47 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState<"specs" | "description" | "shipping">("specs");
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch product by ID (from admin data context or fallback data)
+  // Fetch product by ID (from catalog, offers, or API fallback)
   useEffect(() => {
     if (!productId) return;
 
-    // Search in admin database products
-    const found = adminProducts.find(p => p.id === productId) || PRODUCTS.find(p => p.id === productId);
+    // Search in catalog products
+    const foundCatalog = adminProducts.find(p => p.id === productId) || PRODUCTS.find(p => p.id === productId);
 
-    if (found) {
-      setProduct(found);
+    // Search in offer products
+    const foundOffer = offerProducts?.find(o => o.id === productId);
+
+    if (foundCatalog) {
+      setProduct(foundCatalog);
+      setIsLoading(false);
+    } else if (foundOffer) {
+      setProduct({
+        id: foundOffer.id,
+        name: foundOffer.name,
+        category: "special-offers",
+        price: foundOffer.numericPrice || 0,
+        rating: foundOffer.rating || 5,
+        reviewsCount: 48,
+        image: foundOffer.image,
+        images: [foundOffer.image],
+        description: foundOffer.name,
+        badge: foundOffer.badge || undefined,
+        inStock: foundOffer.inStock,
+        sku: foundOffer.sku || "",
+        specs: foundOffer.specs || {}
+      });
       setIsLoading(false);
     } else {
       // Fetch from API directly if not found in state
       fetch(`/api/products/${productId}`)
-        .then(res => res.ok ? res.json() : null)
+        .then(res => res.ok ? res.json() : fetch(`/api/offers/${productId}`).then(r => r.ok ? r.json() : null))
         .then(data => {
-          if (data) setProduct(data);
+          if (data && !data.error) setProduct(data);
         })
+        .catch(() => {})
         .finally(() => setIsLoading(false));
     }
-  }, [productId, adminProducts]);
+  }, [productId, adminProducts, offerProducts]);
 
   if (isLoading) {
     return (

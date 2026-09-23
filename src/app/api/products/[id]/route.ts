@@ -15,6 +15,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     const product = {
       ...row,
       inStock: Boolean(row.inStock),
+      isOffer: Boolean(row.isOffer),
       images: typeof row.images === "string" ? JSON.parse(row.images) : (row.images || [row.image]),
       specs: typeof row.specs === "string" ? JSON.parse(row.specs) : (row.specs || {})
     };
@@ -30,10 +31,10 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     await initDB();
     const { id } = await params;
     const body = await req.json();
-    const { name, category, price, originalPrice, rating, reviewsCount, image, images, description, badge, inStock, sku, specs } = body;
+    const { name, category, price, originalPrice, rating, reviewsCount, image, images, description, badge, isOffer, inStock, sku, specs } = body;
 
     await pool.query(
-      "UPDATE products SET name = ?, category = ?, price = ?, originalPrice = ?, rating = ?, reviewsCount = ?, image = ?, images = ?, description = ?, badge = ?, inStock = ?, sku = ?, specs = ? WHERE id = ?",
+      "UPDATE products SET name = ?, category = ?, price = ?, originalPrice = ?, rating = ?, reviewsCount = ?, image = ?, images = ?, description = ?, badge = ?, isOffer = ?, inStock = ?, sku = ?, specs = ? WHERE id = ?",
       [
         name,
         category,
@@ -45,6 +46,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         JSON.stringify(images || [image]),
         description,
         badge || null,
+        isOffer ? 1 : 0,
         inStock ? 1 : 0,
         sku,
         JSON.stringify(specs || {}),

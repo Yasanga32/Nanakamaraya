@@ -10,6 +10,7 @@ export interface Product {
   images?: string[];
   description: string;
   badge?: string;
+  isOffer?: boolean;
   inStock: boolean;
   sku: string;
   specs: Record<string, string>;

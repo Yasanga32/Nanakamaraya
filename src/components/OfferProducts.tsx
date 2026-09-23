@@ -120,7 +120,7 @@ export const OFFER_PRODUCTS: OfferProductItem[] = [
 export const OfferProducts: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { setQuickViewProduct } = useCart();
-  const { offerProducts } = useAdminData();
+  const { offerProducts, products: catalogProducts } = useAdminData();
 
   const handleScroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -129,7 +129,28 @@ export const OfferProducts: React.FC = () => {
     }
   };
 
-  const itemsToRender = offerProducts && offerProducts.length > 0 ? offerProducts : OFFER_PRODUCTS;
+  // Convert catalog products with active offers (isOffer===true) to OfferProductItem structure
+  const activeCatalogOffers: OfferProductItem[] = (catalogProducts || [])
+    .filter(p => p.isOffer)
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      sku: p.sku || `SKU-${p.id}`,
+      priceLkr: `LKR ${p.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+      numericPrice: p.price,
+      inStock: p.inStock,
+      rating: p.rating || 5,
+      badge: p.badge || "-15%",
+      image: p.image,
+      specs: p.specs || {}
+    }));
+
+  const baseOffers = offerProducts && offerProducts.length > 0 ? offerProducts : OFFER_PRODUCTS;
+
+  // Unified list: Catalog items marked as offer + dedicated offer products
+  const itemsToRender = Array.from(
+    new Map([...activeCatalogOffers, ...baseOffers].map(item => [item.id, item])).values()
+  );
 
   const handleProductClick = (item: OfferProductItem) => {
     // Map OfferProductItem to standard Product context type for quick view/cart
@@ -260,7 +281,7 @@ export const OfferProducts: React.FC = () => {
                   </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

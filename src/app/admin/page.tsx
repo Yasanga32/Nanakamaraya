@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAdminData } from "@/context/AdminDataContext";
 import { OffersManager } from "@/components/admin/OffersManager";
 import { BannerManager } from "@/components/admin/BannerManager";
@@ -14,14 +15,25 @@ import {
   Package,
   ExternalLink,
   RotateCcw,
-  LayoutDashboard,
-  CheckCircle
+  CheckCircle,
+  Loader2
 } from "lucide-react";
 
-export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"offers" | "banners" | "categories" | "catalog">("offers");
+type TabType = "offers" | "banners" | "categories" | "catalog";
+
+function AdminDashboardContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  // Get active tab from URL search parameters (defaults to 'offers')
+  const activeTab = (searchParams.get("tab") as TabType) || "offers";
+
   const { slides, offerProducts, categories, products, resetToDefaults } = useAdminData();
   const [showResetToast, setShowResetToast] = useState(false);
+
+  const handleTabChange = (tab: TabType) => {
+    router.push(`/admin?tab=${tab}`, { scroll: false });
+  };
 
   const handleReset = () => {
     if (window.confirm("Are you sure you want to reset all content to original defaults?")) {
@@ -52,7 +64,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-3">
             <button
               onClick={handleReset}
-              className="text-xs text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 border border-gray-700 px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors"
+              className="text-xs text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 border border-gray-700 px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors cursor-pointer"
               title="Restore demo content defaults"
             >
               <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
@@ -87,7 +99,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           
           <div
-            onClick={() => setActiveTab("offers")}
+            onClick={() => handleTabChange("offers")}
             className={`p-4 rounded-xl border transition-all cursor-pointer ${
               activeTab === "offers" ? "bg-white border-red-600 shadow-md ring-2 ring-red-600/20" : "bg-white border-gray-200 hover:border-gray-300 shadow-xs"
             }`}
@@ -101,7 +113,7 @@ export default function AdminDashboard() {
           </div>
 
           <div
-            onClick={() => setActiveTab("banners")}
+            onClick={() => handleTabChange("banners")}
             className={`p-4 rounded-xl border transition-all cursor-pointer ${
               activeTab === "banners" ? "bg-white border-red-600 shadow-md ring-2 ring-red-600/20" : "bg-white border-gray-200 hover:border-gray-300 shadow-xs"
             }`}
@@ -115,7 +127,7 @@ export default function AdminDashboard() {
           </div>
 
           <div
-            onClick={() => setActiveTab("categories")}
+            onClick={() => handleTabChange("categories")}
             className={`p-4 rounded-xl border transition-all cursor-pointer ${
               activeTab === "categories" ? "bg-white border-red-600 shadow-md ring-2 ring-red-600/20" : "bg-white border-gray-200 hover:border-gray-300 shadow-xs"
             }`}
@@ -129,7 +141,7 @@ export default function AdminDashboard() {
           </div>
 
           <div
-            onClick={() => setActiveTab("catalog")}
+            onClick={() => handleTabChange("catalog")}
             className={`p-4 rounded-xl border transition-all cursor-pointer ${
               activeTab === "catalog" ? "bg-white border-red-600 shadow-md ring-2 ring-red-600/20" : "bg-white border-gray-200 hover:border-gray-300 shadow-xs"
             }`}
@@ -147,8 +159,8 @@ export default function AdminDashboard() {
         {/* Section Navigation Tabs */}
         <div className="flex items-center gap-2 border-b border-gray-300 pb-3 overflow-x-auto text-xs font-bold">
           <button
-            onClick={() => setActiveTab("offers")}
-            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 ${
+            onClick={() => handleTabChange("offers")}
+            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 cursor-pointer ${
               activeTab === "offers"
                 ? "bg-red-700 text-white shadow-xs"
                 : "bg-white text-gray-700 hover:bg-gray-200 border border-gray-200"
@@ -159,8 +171,8 @@ export default function AdminDashboard() {
           </button>
 
           <button
-            onClick={() => setActiveTab("banners")}
-            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 ${
+            onClick={() => handleTabChange("banners")}
+            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 cursor-pointer ${
               activeTab === "banners"
                 ? "bg-red-700 text-white shadow-xs"
                 : "bg-white text-gray-700 hover:bg-gray-200 border border-gray-200"
@@ -171,8 +183,8 @@ export default function AdminDashboard() {
           </button>
 
           <button
-            onClick={() => setActiveTab("categories")}
-            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 ${
+            onClick={() => handleTabChange("categories")}
+            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 cursor-pointer ${
               activeTab === "categories"
                 ? "bg-red-700 text-white shadow-xs"
                 : "bg-white text-gray-700 hover:bg-gray-200 border border-gray-200"
@@ -183,8 +195,8 @@ export default function AdminDashboard() {
           </button>
 
           <button
-            onClick={() => setActiveTab("catalog")}
-            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 ${
+            onClick={() => handleTabChange("catalog")}
+            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 cursor-pointer ${
               activeTab === "catalog"
                 ? "bg-red-700 text-white shadow-xs"
                 : "bg-white text-gray-700 hover:bg-gray-200 border border-gray-200"
@@ -206,5 +218,22 @@ export default function AdminDashboard() {
       </main>
 
     </div>
+  );
+}
+
+export default function AdminDashboard() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+          <div className="flex items-center gap-2 text-sm font-bold text-gray-600">
+            <Loader2 className="w-5 h-5 animate-spin text-red-600" />
+            <span>Loading Admin Panel...</span>
+          </div>
+        </div>
+      }
+    >
+      <AdminDashboardContent />
+    </Suspense>
   );
 }

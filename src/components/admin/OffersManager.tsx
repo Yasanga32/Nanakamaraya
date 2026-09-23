@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useAdminData } from "@/context/AdminDataContext";
 import { OfferProductItem } from "@/components/OfferProducts";
 import { ImageUploader } from "./ImageUploader";
+import { SpecsBuilder } from "./SpecsBuilder";
 import { Plus, Edit2, Trash2, Check, X, Star, Sparkles } from "lucide-react";
 
 export const OffersManager: React.FC = () => {
@@ -171,6 +172,11 @@ export const OffersManager: React.FC = () => {
                 value={formData.image}
                 onChange={url => setFormData({ ...formData, image: url })}
                 label="Offer Product Image"
+              />
+
+              <SpecsBuilder
+                specs={formData.specs || {}}
+                onChange={newSpecs => setFormData({ ...formData, specs: newSpecs })}
               />
 
               <div className="flex items-center gap-4 pt-2">

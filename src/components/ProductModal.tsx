@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Star, ShoppingBag, Check, ShieldCheck, Truck } from "lucide-react";
+import Link from "next/link";
+import { X, Star, ShoppingBag, Check, ShieldCheck, Truck, ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export const ProductModal: React.FC = () => {
@@ -135,6 +136,15 @@ export const ProductModal: React.FC = () => {
                   )}
                 </button>
               </div>
+
+              <Link
+                href={`/products/${quickViewProduct.id}`}
+                onClick={() => setQuickViewProduct(null)}
+                className="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <span>View Full Product Specs & Details</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
 
               <div className="flex items-center justify-around text-[10px] text-gray-500 pt-2 border-t border-gray-100">
                 <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-green-600" /> Genuine Warranty</span>

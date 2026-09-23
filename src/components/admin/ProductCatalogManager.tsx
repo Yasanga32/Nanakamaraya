@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useAdminData } from "@/context/AdminDataContext";
 import { Product } from "@/data/products";
 import { ImageUploader } from "./ImageUploader";
+import { SpecsBuilder } from "./SpecsBuilder";
 import { Plus, Edit2, Trash2, Package, X } from "lucide-react";
 
 export const ProductCatalogManager: React.FC = () => {
@@ -21,6 +22,7 @@ export const ProductCatalogManager: React.FC = () => {
     image: "",
     description: "",
     badge: "",
+    isOffer: false,
     inStock: true,
     sku: "",
     specs: { Material: "Stainless Steel" }
@@ -36,7 +38,8 @@ export const ProductCatalogManager: React.FC = () => {
       reviewsCount: 15,
       image: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=800",
       description: "High quality architectural hardware solution.",
-      badge: "NEW",
+      badge: "-15%",
+      isOffer: false,
       inStock: true,
       sku: "PROD-" + Math.floor(100 + Math.random() * 900),
       specs: { Material: "Solid Brass" }
@@ -57,6 +60,7 @@ export const ProductCatalogManager: React.FC = () => {
       image: prod.image,
       description: prod.description,
       badge: prod.badge || "",
+      isOffer: Boolean(prod.isOffer),
       inStock: prod.inStock,
       sku: prod.sku,
       specs: prod.specs || {}
@@ -151,7 +155,7 @@ export const ProductCatalogManager: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-gray-700 mb-1">Price ($)</label>
+                  <label className="block text-gray-700 mb-1">Selling Price (LKR / $)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -163,15 +167,45 @@ export const ProductCatalogManager: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-1">Badge (Optional)</label>
+                  <label className="block text-gray-700 mb-1">Original Price (Strikethrough Optional)</label>
                   <input
-                    type="text"
-                    value={formData.badge || ""}
-                    onChange={e => setFormData({ ...formData, badge: e.target.value })}
+                    type="number"
+                    step="0.01"
+                    value={formData.originalPrice || ""}
+                    onChange={e => setFormData({ ...formData, originalPrice: parseFloat(e.target.value) || undefined })}
                     className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-600 focus:outline-none"
-                    placeholder="Hot / Sale / Featured"
+                    placeholder="e.g. 120.00"
                   />
                 </div>
+              </div>
+
+              {/* Offer Promotion Settings */}
+              <div className="p-3 bg-red-50/60 border border-red-200 rounded-xl space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer font-bold text-red-900">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(formData.isOffer)}
+                    onChange={e => setFormData({ ...formData, isOffer: e.target.checked })}
+                    className="w-4 h-4 text-red-600 rounded"
+                  />
+                  <span>🔥 Feature in Limited Time Promotions (Special Offer Section)</span>
+                </label>
+
+                {formData.isOffer && (
+                  <div className="pt-2 animate-in fade-in">
+                    <label className="block text-gray-700 mb-1">Offer Discount Badge / Percentage</label>
+                    <input
+                      type="text"
+                      value={formData.badge || ""}
+                      onChange={e => setFormData({ ...formData, badge: e.target.value })}
+                      className="w-full p-2.5 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-red-600 focus:outline-none"
+                      placeholder="e.g. -15% or 20% OFF"
+                    />
+                    <span className="text-[10px] text-gray-500 font-normal mt-0.5 block">
+                      Shown on product cards in Limited Time Promotions banner
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -189,6 +223,11 @@ export const ProductCatalogManager: React.FC = () => {
                 value={formData.image}
                 onChange={url => setFormData({ ...formData, image: url })}
                 label="Product Image"
+              />
+
+              <SpecsBuilder
+                specs={formData.specs || {}}
+                onChange={newSpecs => setFormData({ ...formData, specs: newSpecs })}
               />
 
               <div className="pt-4 flex justify-end gap-3 border-t">
