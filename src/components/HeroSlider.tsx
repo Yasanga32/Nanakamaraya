@@ -59,7 +59,7 @@ export const HeroSlider: React.FC = () => {
             </h3>
             
             <h1 className="text-3xl sm:text-5xl font-black font-serif tracking-tight leading-none text-white drop-shadow-md">
-              <span className="text-[#d23f3f] block">{slide.highlight}</span>
+              <span className="text-[#b88e00] block">{slide.highlight}</span>
               <span className="text-gray-100 text-2xl sm:text-4xl block mt-1">{slide.subtitle}</span>
             </h1>
 
