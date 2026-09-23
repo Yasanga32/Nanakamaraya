@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PRODUCTS, Product } from "@/data/products";
 import { CATEGORIES } from "@/data/categories";
 import { useCart } from "@/context/CartContext";
 import { useAdminData } from "@/context/AdminDataContext";
-import { Star, ShoppingBag, Eye, Check, Filter } from "lucide-react";
+import { Star, ShoppingBag, Eye, Check, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 
 export const FeaturedProducts: React.FC = () => {
   const { selectedCategory, setSelectedCategory, searchQuery, addToCart, setQuickViewProduct } = useCart();
@@ -14,8 +14,17 @@ export const FeaturedProducts: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"all" | "featured" | "sale">("all");
   const [addedItem, setAddedItem] = useState<string | null>(null);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
+
   const productsToRender = adminProducts && adminProducts.length > 0 ? adminProducts : PRODUCTS;
   const categoriesList = adminCategories && adminCategories.length > 0 ? adminCategories : CATEGORIES;
+
+  // Reset page to 1 whenever filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery, activeTab]);
 
   // Filter products based on selectedCategory, searchQuery, and activeTab
   const filteredProducts = productsToRender.filter((product) => {
@@ -37,6 +46,20 @@ export const FeaturedProducts: React.FC = () => {
 
     return true;
   });
+
+  // Calculate pagination slices
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    const catalogSection = document.getElementById("catalog-section");
+    if (catalogSection) {
+      catalogSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const handleAddToCart = (product: Product) => {
     addToCart(product, 1);
@@ -62,7 +85,7 @@ export const FeaturedProducts: React.FC = () => {
             </h2>
           </div>
           <p className="text-xs text-gray-500 mt-0.5">
-            Showing {filteredProducts.length} premium hardware & fitting items
+            Showing {filteredProducts.length > 0 ? `${startIndex + 1}–${Math.min(endIndex, filteredProducts.length)} of ${filteredProducts.length}` : 0} items
           </p>
         </div>
 
@@ -70,7 +93,7 @@ export const FeaturedProducts: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
           <button
             onClick={() => setSelectedCategory("all")}
-            className={`px-3 py-1.5 rounded-full transition-colors ${
+            className={`px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
               selectedCategory === "all"
                 ? "bg-gray-900 text-white"
                 : "bg-white text-gray-700 hover:bg-gray-200 border border-gray-300"
@@ -81,24 +104,24 @@ export const FeaturedProducts: React.FC = () => {
 
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-3 py-1.5 rounded-md transition-colors ${
-              activeTab === "all" ? "bg-red-700 text-white" : "bg-white text-gray-600 hover:bg-gray-100"
+            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+              activeTab === "all" ? "bg-red-700 text-white" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
             }`}
           >
             All Items
           </button>
           <button
             onClick={() => setActiveTab("featured")}
-            className={`px-3 py-1.5 rounded-md transition-colors ${
-              activeTab === "featured" ? "bg-red-700 text-white" : "bg-white text-gray-600 hover:bg-gray-100"
+            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+              activeTab === "featured" ? "bg-red-700 text-white" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
             }`}
           >
             Popular & Featured
           </button>
           <button
             onClick={() => setActiveTab("sale")}
-            className={`px-3 py-1.5 rounded-md transition-colors ${
-              activeTab === "sale" ? "bg-red-700 text-white" : "bg-white text-gray-600 hover:bg-gray-100"
+            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+              activeTab === "sale" ? "bg-red-700 text-white" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
             }`}
           >
             Special Offers
@@ -117,14 +140,14 @@ export const FeaturedProducts: React.FC = () => {
               setSelectedCategory("all");
               setActiveTab("all");
             }}
-            className="mt-4 bg-gray-900 text-white text-xs font-bold px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+            className="mt-4 bg-gray-900 text-white text-xs font-bold px-4 py-2 rounded-md hover:bg-red-700 transition-colors cursor-pointer"
           >
             Reset Filters
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-          {filteredProducts.map((product) => (
+          {paginatedProducts.map((product) => (
             <div
               key={product.id}
               className="group bg-white rounded-lg border border-gray-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
@@ -150,7 +173,7 @@ export const FeaturedProducts: React.FC = () => {
                     e.stopPropagation();
                     setQuickViewProduct(product);
                   }}
-                  className="absolute top-2.5 right-2.5 bg-white/90 hover:bg-white text-gray-800 p-1.5 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0"
+                  className="absolute top-2.5 right-2.5 bg-white/90 hover:bg-white text-gray-800 p-1.5 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 cursor-pointer"
                   title="Quick View"
                 >
                   <Eye className="w-4 h-4" />
@@ -195,7 +218,7 @@ export const FeaturedProducts: React.FC = () => {
 
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className={`px-3.5 py-2 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs ${
+                    className={`px-3.5 py-2 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
                       addedItem === product.id
                         ? "bg-green-700 text-white"
                         : "bg-[#2d2f36] hover:bg-red-700 text-white"
@@ -218,6 +241,75 @@ export const FeaturedProducts: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Pagination Controls Bar */}
+      {filteredProducts.length > 0 && totalPages > 1 && (
+        <div className="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+          
+          {/* Showing Count Status */}
+          <div className="text-gray-500">
+            Showing <span className="font-bold text-gray-900">{startIndex + 1}–{Math.min(endIndex, filteredProducts.length)}</span> of <span className="font-bold text-gray-900">{filteredProducts.length}</span> products
+          </div>
+
+          {/* Controls: Per Page Selector + Page Buttons */}
+          <div className="flex items-center gap-3 flex-wrap justify-center">
+            <div className="flex items-center gap-1 mr-2 text-gray-600">
+              <span className="font-normal text-[11px]">Show per page:</span>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setItemsPerPage(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="bg-white border border-gray-300 rounded px-2 py-1 text-gray-800 font-bold focus:outline-none focus:ring-1 focus:ring-red-600 cursor-pointer"
+              >
+                <option value={8}>8</option>
+                <option value={12}>12</option>
+                <option value={16}>16</option>
+                <option value={24}>24</option>
+              </select>
+            </div>
+
+            {/* Prev Button */}
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:hover:bg-white transition-colors cursor-pointer flex items-center gap-1"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Prev</span>
+            </button>
+
+            {/* Page Numbers */}
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`w-8 h-8 rounded-md font-bold transition-all cursor-pointer ${
+                    currentPage === page
+                      ? "bg-red-700 text-white shadow-xs"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:hover:bg-white transition-colors cursor-pointer flex items-center gap-1"
+            >
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
         </div>
       )}
 

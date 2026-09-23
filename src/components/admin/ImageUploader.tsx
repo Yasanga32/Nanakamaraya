@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Upload, Image as ImageIcon, Loader2, X, Link as LinkIcon } from "lucide-react";
+import { Upload, Image as ImageIcon, Loader2, X, Link as LinkIcon, Sliders } from "lucide-react";
+import { ImageCropperModal } from "./ImageCropperModal";
 
 interface ImageUploaderProps {
   value: string;
@@ -17,6 +18,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"upload" | "url">("upload");
+  const [showCropper, setShowCropper] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +44,8 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       }
 
       onChange(data.url);
+      // Open cropper immediately after upload for quick customization!
+      setShowCropper(true);
     } catch (err: any) {
       setError(err.message || "Something went wrong uploading file");
     } finally {
@@ -60,7 +64,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab("upload")}
-            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold transition-colors ${
+            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold transition-colors cursor-pointer ${
               activeTab === "upload" 
                 ? "bg-red-700 text-white" 
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -71,7 +75,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab("url")}
-            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold transition-colors ${
+            className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold transition-colors cursor-pointer ${
               activeTab === "url" 
                 ? "bg-red-700 text-white" 
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -92,7 +96,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
             className="hidden"
           />
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <button
               type="button"
               disabled={isUploading}
@@ -120,13 +124,24 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
                   className="w-8 h-8 object-cover rounded border border-gray-300 shrink-0"
                   onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                 />
-                <span className="text-[10px] text-gray-600 font-mono truncate max-w-[150px]">
+                <span className="text-[10px] text-gray-600 font-mono truncate max-w-[120px]">
                   {value}
                 </span>
+
+                <button
+                  type="button"
+                  onClick={() => setShowCropper(true)}
+                  className="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded text-[10px] font-bold flex items-center gap-1 transition-colors shrink-0 cursor-pointer"
+                  title="Customize & Crop Preview"
+                >
+                  <Sliders className="w-3 h-3 text-red-600" />
+                  <span>Adjust / Crop</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => onChange("")}
-                  className="text-gray-400 hover:text-red-600 p-1 shrink-0"
+                  className="text-gray-400 hover:text-red-600 p-1 shrink-0 cursor-pointer"
                   title="Remove image"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -136,18 +151,41 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
           </div>
         </div>
       ) : (
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-            <LinkIcon className="w-3.5 h-3.5" />
+        <div className="space-y-2">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <LinkIcon className="w-3.5 h-3.5" />
+            </div>
+            <input
+              type="text"
+              required
+              value={value}
+              onChange={e => onChange(e.target.value)}
+              placeholder="https://example.com/image.jpg or /uploads/..."
+              className="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-600 focus:outline-none"
+            />
           </div>
-          <input
-            type="text"
-            required
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            placeholder="https://example.com/image.jpg or /uploads/..."
-            className="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-600 focus:outline-none"
-          />
+
+          {value && (
+            <div className="flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200">
+              <div className="flex items-center gap-2">
+                <img
+                  src={value}
+                  alt="Preview"
+                  className="w-8 h-8 object-cover rounded border"
+                />
+                <span className="text-[10px] text-gray-500 truncate max-w-[200px]">{value}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCropper(true)}
+                className="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded text-[10px] font-bold flex items-center gap-1 transition-colors cursor-pointer"
+              >
+                <Sliders className="w-3 h-3" />
+                <span>Adjust / Crop</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -155,16 +193,16 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         <p className="text-[10px] text-red-600 font-medium">{error}</p>
       )}
 
-      {/* Image Preview Thumbnail */}
-      {value && activeTab === "url" && (
-        <div className="mt-2 flex items-center gap-2 bg-gray-50 p-2 rounded border border-gray-200">
-          <img
-            src={value}
-            alt="Preview"
-            className="w-10 h-10 object-cover rounded border"
-          />
-          <span className="text-[10px] text-gray-500 truncate">{value}</span>
-        </div>
+      {/* Interactive Image Adjuster / Cropper Modal */}
+      {showCropper && value && (
+        <ImageCropperModal
+          imageUrl={value}
+          onClose={() => setShowCropper(false)}
+          onSave={(croppedUrl) => {
+            onChange(croppedUrl);
+            setShowCropper(false);
+          }}
+        />
       )}
     </div>
   );

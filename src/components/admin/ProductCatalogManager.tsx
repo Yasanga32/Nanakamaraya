@@ -32,17 +32,17 @@ export const ProductCatalogManager: React.FC = () => {
     setFormData({
       name: "",
       category: categories[0]?.id || "architectural-hardware",
-      price: 99.00,
-      originalPrice: 120.00,
+      price: 0,
+      originalPrice: undefined,
       rating: 5.0,
-      reviewsCount: 15,
-      image: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=800",
-      description: "High quality architectural hardware solution.",
-      badge: "-15%",
+      reviewsCount: 0,
+      image: "",
+      description: "",
+      badge: "",
       isOffer: false,
       inStock: true,
       sku: "PROD-" + Math.floor(100 + Math.random() * 900),
-      specs: { Material: "Solid Brass" }
+      specs: {}
     });
     setIsCreating(true);
     setEditingProduct(null);
@@ -70,10 +70,15 @@ export const ProductCatalogManager: React.FC = () => {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    const finalData = {
+      ...formData,
+      badge: formData.isOffer ? formData.badge : "",
+      originalPrice: formData.isOffer ? formData.originalPrice : undefined,
+    };
     if (isCreating) {
-      addProduct(formData);
+      addProduct(finalData);
     } else if (editingProduct) {
-      updateProduct(editingProduct.id, formData);
+      updateProduct(editingProduct.id, finalData);
     }
     setIsCreating(false);
     setEditingProduct(null);
