@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} scroll-smooth`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} scroll-smooth`} suppressHydrationWarning>
       <body className="font-sans bg-white text-gray-900 antialiased min-h-screen flex flex-col justify-between">
         <AdminDataProvider>
           <CartProvider>

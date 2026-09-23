@@ -246,7 +246,7 @@ export const OfferProducts: React.FC = () => {
                 {/* Ratings & Stock Status */}
                 <div className="flex items-center justify-between mt-2">
                   <div className="flex text-amber-400">
-                    {[...Array(item.rating)].map((_, i) => (
+                    {[...Array(Math.min(5, Math.max(0, Math.floor(Number(item.rating) || 5))))].map((_, i) => (
                       <Star key={i} className="w-3 h-3 fill-current" />
                     ))}
                   </div>

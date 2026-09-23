@@ -141,7 +141,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="mt-10 pt-6 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-500 gap-4">
-          <p>© {new Date().getFullYear()} M.M. NOORBHOY & CO. All Rights Reserved.</p>
+          <p suppressHydrationWarning>© {new Date().getFullYear()} M.M. NOORBHOY & CO. All Rights Reserved.</p>
           <div className="flex items-center gap-4 text-gray-400">
             <span>Visa</span>
             <span>Mastercard</span>
