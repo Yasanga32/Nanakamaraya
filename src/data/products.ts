@@ -7,6 +7,7 @@ export interface Product {
   rating: number;
   reviewsCount: number;
   image: string;
+  images?: string[];
   description: string;
   badge?: string;
   inStock: boolean;
@@ -24,6 +25,11 @@ export const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 128,
     image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=800",
+    images: [
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=800"
+    ],
     description: "High-density carbon crystal fluted wall panel. Waterproof, flame-retardant, and acoustic sound dampening finish.",
     badge: "Hot Deal",
     inStock: true,

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { PRODUCTS, Product } from "@/data/products";
 import { CATEGORIES } from "@/data/categories";
 import { useCart } from "@/context/CartContext";
@@ -128,7 +129,7 @@ export const FeaturedProducts: React.FC = () => {
               key={product.id}
               className="group bg-white rounded-lg border border-gray-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
             >
-              <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
+              <Link href={`/products/${product.id}`} className="relative aspect-4/3 overflow-hidden bg-gray-100 block cursor-pointer">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -144,13 +145,17 @@ export const FeaturedProducts: React.FC = () => {
 
                 {/* Quick View Button */}
                 <button
-                  onClick={() => setQuickViewProduct(product)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setQuickViewProduct(product);
+                  }}
                   className="absolute top-2.5 right-2.5 bg-white/90 hover:bg-white text-gray-800 p-1.5 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0"
                   title="Quick View"
                 >
                   <Eye className="w-4 h-4" />
                 </button>
-              </div>
+              </Link>
 
               {/* Product Info */}
               <div className="p-4 flex-1 flex flex-col justify-between">
@@ -164,9 +169,11 @@ export const FeaturedProducts: React.FC = () => {
                     </div>
                   </div>
 
-                  <h3 className="text-sm font-bold text-gray-900 group-hover:text-red-700 transition-colors line-clamp-2">
-                    {product.name}
-                  </h3>
+                  <Link href={`/products/${product.id}`} className="block">
+                    <h3 className="text-sm font-bold text-gray-900 group-hover:text-red-700 transition-colors line-clamp-2">
+                      {product.name}
+                    </h3>
+                  </Link>
 
                   <p className="text-[11px] text-gray-500 mt-1 line-clamp-2">
                     {product.description}

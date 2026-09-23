@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Link from "next/link";
 import { ChevronLeft, ChevronRight, Check, Star } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAdminData } from "@/context/AdminDataContext";
@@ -190,10 +191,10 @@ export const OfferProducts: React.FC = () => {
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {itemsToRender.map((item) => (
-            <div
+            <Link
               key={item.id}
-              onClick={() => handleProductClick(item)}
-              className="w-[250px] sm:w-[275px] shrink-0 bg-white rounded-2xl border border-gray-200/90 shadow-xs hover:shadow-xl transition-all duration-300 p-3.5 flex flex-col justify-between cursor-pointer group"
+              href={`/products/${item.id}`}
+              className="w-[250px] sm:w-[275px] shrink-0 bg-white rounded-2xl border border-gray-200/90 shadow-xs hover:shadow-xl transition-all duration-300 p-3.5 flex flex-col justify-between cursor-pointer group block"
             >
               <div>
                 {/* Product Image Area */}

@@ -151,6 +151,7 @@ export async function initDB() {
           rating DOUBLE DEFAULT 5,
           reviewsCount INT DEFAULT 0,
           image TEXT NOT NULL,
+          images JSON,
           description TEXT,
           badge VARCHAR(100),
           inStock TINYINT(1) DEFAULT 1,
@@ -159,6 +160,13 @@ export async function initDB() {
           createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
       `);
+
+      // Migration: Add images column if missing in existing database
+      try {
+        await connection.query("ALTER TABLE products ADD COLUMN images JSON");
+      } catch (e) {
+        // Column already exists or error ignored
+      }
 
       // --- Seed initial data if tables are empty ---
 
