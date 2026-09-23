@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/Header";
 import { Navbar } from "@/components/Navbar";
+import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { HeroSlider } from "@/components/HeroSlider";
 import { OfferProducts } from "@/components/OfferProducts";
 import { CategoryGrid } from "@/components/CategoryGrid";
@@ -18,6 +19,9 @@ export default function Home() {
 
       {/* Main Dark Menu Navigation */}
       <Navbar />
+
+      {/* Black Theme Announcement Ticker Bar */}
+      <AnnouncementBar />
 
       {/* Main Hero Slider Banner */}
       <HeroSlider />

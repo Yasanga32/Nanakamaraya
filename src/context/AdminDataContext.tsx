@@ -67,122 +67,230 @@ interface AdminDataContextType {
   offerProducts: OfferProductItem[];
   categories: Category[];
   products: Product[];
+  isLoading: boolean;
   
   // Handlers for Slides
-  addSlide: (slide: Omit<Slide, "id">) => void;
-  updateSlide: (id: string, updated: Partial<Slide>) => void;
-  deleteSlide: (id: string) => void;
+  addSlide: (slide: Omit<Slide, "id">) => Promise<void>;
+  updateSlide: (id: string, updated: Partial<Slide>) => Promise<void>;
+  deleteSlide: (id: string) => Promise<void>;
 
   // Handlers for Offer Products
-  addOfferProduct: (item: Omit<OfferProductItem, "id">) => void;
-  updateOfferProduct: (id: string, updated: Partial<OfferProductItem>) => void;
-  deleteOfferProduct: (id: string) => void;
+  addOfferProduct: (item: Omit<OfferProductItem, "id">) => Promise<void>;
+  updateOfferProduct: (id: string, updated: Partial<OfferProductItem>) => Promise<void>;
+  deleteOfferProduct: (id: string) => Promise<void>;
 
   // Handlers for Categories
-  updateCategory: (id: string, updated: Partial<Category>) => void;
+  updateCategory: (id: string, updated: Partial<Category>) => Promise<void>;
 
   // Handlers for Catalog Products
-  addProduct: (product: Omit<Product, "id">) => void;
-  updateProduct: (id: string, updated: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
+  addProduct: (product: Omit<Product, "id">) => Promise<void>;
+  updateProduct: (id: string, updated: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
 
   // Utilities
-  resetToDefaults: () => void;
+  resetToDefaults: () => Promise<void>;
 }
 
 const AdminDataContext = createContext<AdminDataContextType | undefined>(undefined);
-
-const LOCAL_STORAGE_KEY = "nanakamaraya_admin_data_v1";
 
 export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [slides, setSlides] = useState<Slide[]>(INITIAL_SLIDES);
   const [offerProducts, setOfferProducts] = useState<OfferProductItem[]>(OFFER_PRODUCTS);
   const [categories, setCategories] = useState<Category[]>(CATEGORIES);
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load from LocalStorage on mount
+  // Fetch initial data from MySQL via API Routes
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.slides) setSlides(parsed.slides);
-        if (parsed.offerProducts) setOfferProducts(parsed.offerProducts);
-        if (parsed.categories) setCategories(parsed.categories);
-        if (parsed.products) setProducts(parsed.products);
+    async function loadAllData() {
+      try {
+        setIsLoading(true);
+        const [resBanners, resOffers, resCats, resProds] = await Promise.all([
+          fetch("/api/banners").then(r => r.ok ? r.json() : null),
+          fetch("/api/offers").then(r => r.ok ? r.json() : null),
+          fetch("/api/categories").then(r => r.ok ? r.json() : null),
+          fetch("/api/products").then(r => r.ok ? r.json() : null)
+        ]);
+
+        if (Array.isArray(resBanners) && resBanners.length > 0) setSlides(resBanners);
+        if (Array.isArray(resOffers) && resOffers.length > 0) setOfferProducts(resOffers);
+        if (Array.isArray(resCats) && resCats.length > 0) setCategories(resCats);
+        if (Array.isArray(resProds) && resProds.length > 0) setProducts(resProds);
+      } catch (err) {
+        console.error("Failed to load data from API routes:", err);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (e) {
-      console.error("Failed to load admin data from localStorage", e);
-    } finally {
-      setIsLoaded(true);
     }
+
+    loadAllData();
   }, []);
 
-  // Save to LocalStorage whenever state changes
-  useEffect(() => {
-    if (!isLoaded) return;
-    try {
-      const dataToSave = { slides, offerProducts, categories, products };
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
-    } catch (e) {
-      console.error("Failed to save admin data to localStorage", e);
-    }
-  }, [slides, offerProducts, categories, products, isLoaded]);
-
-  // Slide Handlers
-  const addSlide = (slide: Omit<Slide, "id">) => {
-    const newSlide: Slide = { ...slide, id: `slide-${Date.now()}` };
+  // --- Slide Handlers ---
+  const addSlide = async (slide: Omit<Slide, "id">) => {
+    const newId = `slide-${Date.now()}`;
+    const newSlide: Slide = { ...slide, id: newId };
     setSlides(prev => [...prev, newSlide]);
+
+    try {
+      await fetch("/api/banners", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSlide)
+      });
+    } catch (e) {
+      console.error("API call failed for addSlide:", e);
+    }
   };
 
-  const updateSlide = (id: string, updated: Partial<Slide>) => {
-    setSlides(prev => prev.map(s => s.id === id ? { ...s, ...updated } : s));
+  const updateSlide = async (id: string, updated: Partial<Slide>) => {
+    const existing = slides.find(s => s.id === id);
+    if (!existing) return;
+    const fullSlide = { ...existing, ...updated };
+    setSlides(prev => prev.map(s => s.id === id ? fullSlide : s));
+
+    try {
+      await fetch(`/api/banners/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullSlide)
+      });
+    } catch (e) {
+      console.error("API call failed for updateSlide:", e);
+    }
   };
 
-  const deleteSlide = (id: string) => {
+  const deleteSlide = async (id: string) => {
     setSlides(prev => prev.filter(s => s.id !== id));
+    try {
+      await fetch(`/api/banners/${id}`, { method: "DELETE" });
+    } catch (e) {
+      console.error("API call failed for deleteSlide:", e);
+    }
   };
 
-  // Offer Product Handlers
-  const addOfferProduct = (item: Omit<OfferProductItem, "id">) => {
+  // --- Offer Product Handlers ---
+  const addOfferProduct = async (item: Omit<OfferProductItem, "id">) => {
     const newItem: OfferProductItem = { ...item, id: `offer-${Date.now()}` };
     setOfferProducts(prev => [newItem, ...prev]);
+
+    try {
+      await fetch("/api/offers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newItem)
+      });
+    } catch (e) {
+      console.error("API call failed for addOfferProduct:", e);
+    }
   };
 
-  const updateOfferProduct = (id: string, updated: Partial<OfferProductItem>) => {
-    setOfferProducts(prev => prev.map(item => item.id === id ? { ...item, ...updated } : item));
+  const updateOfferProduct = async (id: string, updated: Partial<OfferProductItem>) => {
+    const existing = offerProducts.find(o => o.id === id);
+    if (!existing) return;
+    const fullItem = { ...existing, ...updated };
+    setOfferProducts(prev => prev.map(item => item.id === id ? fullItem : item));
+
+    try {
+      await fetch(`/api/offers/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullItem)
+      });
+    } catch (e) {
+      console.error("API call failed for updateOfferProduct:", e);
+    }
   };
 
-  const deleteOfferProduct = (id: string) => {
+  const deleteOfferProduct = async (id: string) => {
     setOfferProducts(prev => prev.filter(item => item.id !== id));
+    try {
+      await fetch(`/api/offers/${id}`, { method: "DELETE" });
+    } catch (e) {
+      console.error("API call failed for deleteOfferProduct:", e);
+    }
   };
 
-  // Category Handlers
-  const updateCategory = (id: string, updated: Partial<Category>) => {
-    setCategories(prev => prev.map(c => c.id === id ? { ...c, ...updated } : c));
+  // --- Category Handlers ---
+  const updateCategory = async (id: string, updated: Partial<Category>) => {
+    const existing = categories.find(c => c.id === id);
+    if (!existing) return;
+    const fullCat = { ...existing, ...updated };
+    setCategories(prev => prev.map(c => c.id === id ? fullCat : c));
+
+    try {
+      await fetch(`/api/categories/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullCat)
+      });
+    } catch (e) {
+      console.error("API call failed for updateCategory:", e);
+    }
   };
 
-  // Product Handlers
-  const addProduct = (product: Omit<Product, "id">) => {
+  // --- Product Handlers ---
+  const addProduct = async (product: Omit<Product, "id">) => {
     const newProduct: Product = { ...product, id: `prod-${Date.now()}` };
     setProducts(prev => [newProduct, ...prev]);
+
+    try {
+      await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newProduct)
+      });
+    } catch (e) {
+      console.error("API call failed for addProduct:", e);
+    }
   };
 
-  const updateProduct = (id: string, updated: Partial<Product>) => {
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updated } : p));
+  const updateProduct = async (id: string, updated: Partial<Product>) => {
+    const existing = products.find(p => p.id === id);
+    if (!existing) return;
+    const fullProd = { ...existing, ...updated };
+    setProducts(prev => prev.map(p => p.id === id ? fullProd : p));
+
+    try {
+      await fetch(`/api/products/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullProd)
+      });
+    } catch (e) {
+      console.error("API call failed for updateProduct:", e);
+    }
   };
 
-  const deleteProduct = (id: string) => {
+  const deleteProduct = async (id: string) => {
     setProducts(prev => prev.filter(p => p.id !== id));
+    try {
+      await fetch(`/api/products/${id}`, { method: "DELETE" });
+    } catch (e) {
+      console.error("API call failed for deleteProduct:", e);
+    }
   };
 
-  const resetToDefaults = () => {
-    setSlides(INITIAL_SLIDES);
-    setOfferProducts(OFFER_PRODUCTS);
-    setCategories(CATEGORIES);
-    setProducts(PRODUCTS);
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
+  const resetToDefaults = async () => {
+    setIsLoading(true);
+    try {
+      // Refresh state from DB
+      const [resBanners, resOffers, resCats, resProds] = await Promise.all([
+        fetch("/api/banners").then(r => r.json()),
+        fetch("/api/offers").then(r => r.json()),
+        fetch("/api/categories").then(r => r.json()),
+        fetch("/api/products").then(r => r.json())
+      ]);
+
+      setSlides(resBanners || INITIAL_SLIDES);
+      setOfferProducts(resOffers || OFFER_PRODUCTS);
+      setCategories(resCats || CATEGORIES);
+      setProducts(resProds || PRODUCTS);
+    } catch (e) {
+      console.error("Failed to reset/reload defaults from DB:", e);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -192,6 +300,7 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         offerProducts,
         categories,
         products,
+        isLoading,
         addSlide,
         updateSlide,
         deleteSlide,
