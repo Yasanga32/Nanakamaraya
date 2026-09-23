@@ -17,6 +17,9 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "M.M. NOORBHOY & CO | Architectural Hardware, Fluted Panels & Smart Locks",
   description: "Premier hardware shop offering architectural hardware, bathroom fittings, fluted panels, furniture hardware, smart locks, and homeware since 1902.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

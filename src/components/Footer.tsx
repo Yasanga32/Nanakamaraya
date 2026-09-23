@@ -37,14 +37,11 @@ export const Footer: React.FC = () => {
           {/* Column 1: Brand Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="bg-white text-black px-3 py-2 text-center rounded-sm font-serif font-bold">
-                <span className="text-xl tracking-tighter block leading-none">MM</span>
-                <span className="text-[7px] uppercase tracking-widest block text-red-700">1902</span>
-              </div>
-              <div>
-                <span className="text-sm font-black text-white font-serif uppercase tracking-wider block">M.M. NOORBHOY & CO</span>
-                <span className="text-[10px] text-gray-400 font-sans uppercase">Quality Hardware Solutions</span>
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="M.M. NOORBHOY & CO" 
+                className="h-10 w-auto object-contain bg-white/10 p-1 rounded" 
+              />
             </div>
 
             <p className="text-xs text-gray-400 leading-relaxed">

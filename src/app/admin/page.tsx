@@ -39,16 +39,13 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           
           <div className="flex items-center gap-3">
+            <img 
+              src="/logo.png" 
+              alt="M.M. NOORBHOY & CO" 
+              className="h-9 w-auto object-contain bg-white/10 p-1 rounded" 
+            />
             <div className="bg-red-700 text-white font-serif font-bold text-xs px-2.5 py-1 rounded shadow-xs">
               ADMIN
-            </div>
-            <div>
-              <h1 className="text-base font-extrabold font-serif tracking-wider uppercase">
-                M.M. NOORBHOY & CO
-              </h1>
-              <span className="text-[10px] text-gray-400 font-mono tracking-wider block">
-                STORE CONTENT MANAGER
-              </span>
             </div>
           </div>
 

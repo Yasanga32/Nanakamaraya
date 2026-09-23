@@ -23,14 +23,11 @@ export const Header: React.FC = () => {
         
         {/* Brand Logo */}
         <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="bg-black text-white px-3 py-2 text-center rounded-sm font-serif font-bold leading-none shadow-sm">
-            <span className="text-2xl tracking-tighter block">MM</span>
-            <span className="text-[8px] uppercase tracking-widest block text-gray-400 mt-0.5">SINCE 1902</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-base font-extrabold text-gray-900 tracking-wider font-serif uppercase">M.M. NOORBHOY & CO</span>
-            <span className="text-[10px] text-gray-500 font-sans tracking-widest uppercase font-semibold">Architectural & Hardware Solutions</span>
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="M.M. NOORBHOY & CO" 
+            className="h-12 w-auto object-contain"
+          />
         </div>
 
         {/* Central Search Bar */}
