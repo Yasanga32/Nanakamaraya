@@ -131,8 +131,7 @@ export default function ProductDetailPage() {
 
   // Handle Buy Now button
   const handleBuyNow = () => {
-    addToCart(product, quantity);
-    setIsCartOpen(true);
+    router.push(`/checkout?productId=${product.id}&qty=${quantity}`);
   };
 
   // Related products from same category

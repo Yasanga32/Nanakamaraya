@@ -1,22 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export const CartDrawer: React.FC = () => {
-  const { isCartOpen, setIsCartOpen, cart, updateQuantity, removeFromCart, subtotal, clearCart } = useCart();
-  const [isCheckedOut, setIsCheckedOut] = useState(false);
+  const router = useRouter();
+  const { isCartOpen, setIsCartOpen, cart, updateQuantity, removeFromCart, subtotal } = useCart();
 
   if (!isCartOpen) return null;
 
   const handleCheckout = () => {
-    setIsCheckedOut(true);
-    setTimeout(() => {
-      clearCart();
-      setIsCheckedOut(false);
-      setIsCartOpen(false);
-    }, 2500);
+    setIsCartOpen(false);
+    router.push("/checkout");
   };
 
   return (
@@ -46,16 +43,7 @@ export const CartDrawer: React.FC = () => {
           </button>
         </div>
 
-        {/* Success Checkout Message */}
-        {isCheckedOut ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-3">
-            <CheckCircle2 className="w-16 h-16 text-green-600 animate-bounce" />
-            <h3 className="text-xl font-bold font-serif text-gray-900">Order Placed Successfully!</h3>
-            <p className="text-xs text-gray-500 max-w-xs">
-              Thank you for shopping at M.M. Noorbhoy & Co. Your invoice and dispatch details have been sent.
-            </p>
-          </div>
-        ) : cart.length === 0 ? (
+        {cart.length === 0 ? (
           /* Empty Cart State */
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center text-gray-400 space-y-3">
             <ShoppingBag className="w-16 h-16 text-gray-300 stroke-1" />
@@ -119,7 +107,7 @@ export const CartDrawer: React.FC = () => {
         )}
 
         {/* Footer Summary & Checkout */}
-        {cart.length > 0 && !isCheckedOut && (
+        {cart.length > 0 && (
           <div className="p-4 bg-gray-50 border-t border-gray-200 space-y-3">
             <div className="flex justify-between items-center text-xs font-bold text-gray-700">
               <span>Subtotal</span>
