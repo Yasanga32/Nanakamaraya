@@ -6,6 +6,7 @@ import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { HeroSlider } from "@/components/HeroSlider";
 import { OfferProducts } from "@/components/OfferProducts";
 import { CategoryGrid } from "@/components/CategoryGrid";
+import { PopularBrands } from "@/components/PopularBrands";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { CartDrawer } from "@/components/CartDrawer";
 import { ProductModal } from "@/components/ProductModal";
@@ -29,10 +30,13 @@ export default function Home() {
       {/* Offers Products Topic with Cards & Horizontal Arrow Navigation */}
       <OfferProducts />
 
-      {/* 10 Category Grid Cards matching reference image */}
+      {/* Category Grid Cards */}
       <CategoryGrid />
 
-      {/* Product Catalog & Filter Section */}
+      {/* Popular Brands Row matching reference image */}
+      <PopularBrands />
+
+      {/* Product Catalog & Filter Section ("All Collections") */}
       <FeaturedProducts />
 
       {/* Slide-over Cart & Quick View Modals */}
