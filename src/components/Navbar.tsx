@@ -56,7 +56,7 @@ export const Navbar: React.FC = () => {
   return (
     <nav className="w-full bg-[#34373d] text-white sticky top-0 z-40 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        
+
         {/* Desktop Navigation Links */}
         <div className="hidden xl:flex items-center space-x-1 text-xs font-bold tracking-wide">
           {navItems.map((item, idx) => (

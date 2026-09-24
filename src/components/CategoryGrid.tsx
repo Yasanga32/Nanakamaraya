@@ -1,10 +1,9 @@
 "use client";
 
 import React from "react";
-import { CATEGORIES, Category } from "@/data/categories";
+import { CATEGORIES } from "@/data/categories";
 import { useCart } from "@/context/CartContext";
 import { useAdminData } from "@/context/AdminDataContext";
-import { ArrowRight } from "lucide-react";
 
 export const CategoryGrid: React.FC = () => {
   const { selectedCategory, setSelectedCategory } = useCart();
@@ -23,9 +22,9 @@ export const CategoryGrid: React.FC = () => {
   return (
     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       
-      {/* Title */}
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-serif font-bold text-gray-800 tracking-tight">
+      {/* Title Header */}
+      <div className="text-center mb-10">
+        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 tracking-tight">
           Shop by Category
         </h2>
         <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-semibold">
@@ -33,8 +32,8 @@ export const CategoryGrid: React.FC = () => {
         </p>
       </div>
 
-      {/* Grid of Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* Round Circular Category Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-6 sm:gap-8 justify-items-center">
         {categoriesToRender.map((cat) => {
           const isSelected = selectedCategory === cat.id;
 
@@ -42,37 +41,32 @@ export const CategoryGrid: React.FC = () => {
             <div
               key={cat.id}
               onClick={() => handleSelect(cat.id)}
-              className={`group relative h-[320px] rounded-lg overflow-hidden cursor-pointer shadow-md border transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl ${
-                isSelected ? "ring-2 ring-red-600 border-red-600" : "border-gray-200 hover:border-gray-400"
-              }`}
+              className="group flex flex-col items-center cursor-pointer text-center select-none"
             >
-              {/* Background Image */}
-              <img
-                src={cat.image}
-                alt={cat.title}
-                className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
-              />
-
-              {/* Dark Gradient Overlay matching image style */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent group-hover:from-black/95 transition-all" />
-
-              {/* Card Text Content */}
-              <div className="absolute inset-x-0 bottom-0 p-4 text-white flex flex-col justify-end space-y-1 z-10">
-                <h3 className="text-base font-bold font-serif leading-tight group-hover:text-red-400 transition-colors flex items-center justify-between">
-                  <span>{cat.title}</span>
-                  <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-red-400" />
-                </h3>
-                
-                <p className="text-[11px] text-gray-300 font-sans leading-snug line-clamp-3 opacity-90">
-                  {cat.description}
-                </p>
-
-                <div className="pt-2 flex items-center justify-between text-[10px] text-gray-400 font-medium border-t border-white/10 mt-1">
-                  <span>{cat.itemCount} Items</span>
-                  <span className="text-red-400 font-semibold group-hover:underline">Explore →</span>
-                </div>
+              {/* Round Circle Image Container */}
+              <div className={`relative w-28 h-28 sm:w-36 sm:h-36 lg:w-40 lg:h-40 rounded-full bg-[#f4f4f6] border overflow-hidden transition-all duration-300 flex items-center justify-center p-1 shadow-xs group-hover:shadow-xl group-hover:-translate-y-1.5 ${
+                isSelected 
+                  ? "ring-4 ring-red-600 border-red-600 bg-white scale-105 shadow-md" 
+                  : "border-gray-200/80 group-hover:border-red-600 group-hover:ring-4 group-hover:ring-red-100/70"
+              }`}>
+                <img
+                  src={cat.image}
+                  alt={cat.title}
+                  className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500"
+                />
               </div>
 
+              {/* Title & Item Count below Circle */}
+              <div className="mt-3.5 flex flex-col items-center max-w-[140px]">
+                <h3 className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-red-700 transition-colors leading-snug line-clamp-2">
+                  {cat.title}
+                </h3>
+                {cat.itemCount !== undefined && (
+                  <span className="text-[10px] text-gray-400 font-semibold mt-0.5">
+                    {cat.itemCount} Items
+                  </span>
+                )}
+              </div>
             </div>
           );
         })}
