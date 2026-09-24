@@ -9,6 +9,7 @@ import { BudgetHardwareSection } from "@/components/BudgetHardwareSection";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { PopularBrands } from "@/components/PopularBrands";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
+import { AboutUsSection } from "@/components/AboutUsSection";
 import { CartDrawer } from "@/components/CartDrawer";
 import { ProductModal } from "@/components/ProductModal";
 import { Footer } from "@/components/Footer";
@@ -42,6 +43,9 @@ export default function Home() {
 
       {/* Popular Brands Row matching reference image */}
       <PopularBrands />
+
+      {/* About Us Section matching reference image */}
+      <AboutUsSection />
 
       {/* Slide-over Cart & Quick View Modals */}
       <CartDrawer />
