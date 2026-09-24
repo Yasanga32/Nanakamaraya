@@ -10,7 +10,7 @@ import { Product } from "@/data/products";
 export const BudgetHardwareSection: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { addToCart, setSelectedCategory, setQuickViewProduct } = useCart();
-  const { products: adminProducts } = useAdminData();
+  const { budgetItems } = useAdminData();
 
   const handleScroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -18,11 +18,6 @@ export const BudgetHardwareSection: React.FC = () => {
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
-
-  // Filter or select products for Budget-Friendly Faucets & Hardware
-  const budgetProducts = adminProducts && adminProducts.length > 0
-    ? adminProducts.slice(0, 8)
-    : [];
 
   const handleShopAll = () => {
     setSelectedCategory("kitchen-fittings");
@@ -95,9 +90,9 @@ export const BudgetHardwareSection: React.FC = () => {
             ref={scrollRef}
             className="w-full flex gap-4 sm:gap-5 overflow-x-auto scrollbar-none py-1 px-1 scroll-smooth"
           >
-            {budgetProducts.map((item, idx) => {
-              const boughtTag = idx % 2 === 0 ? "1K+ bought last week" : "500+ bought last week";
-              const brandName = idx % 3 === 0 ? "Project Source" : idx % 3 === 1 ? "Delta®" : "allen + roth®";
+            {budgetItems.map((item, idx) => {
+              const boughtTag = item.badge || (idx % 2 === 0 ? "1K+ bought last week" : "500+ bought last week");
+              const brandName = item.brandName || "Project Source";
 
               return (
                 <div
@@ -107,7 +102,17 @@ export const BudgetHardwareSection: React.FC = () => {
                   <div>
                     {/* Square Image Box */}
                     <div 
-                      onClick={() => setQuickViewProduct(item)}
+                      onClick={() => setQuickViewProduct({
+                        id: item.id,
+                        name: item.name,
+                        category: item.catId || "kitchen-fittings",
+                        price: item.price,
+                        rating: item.rating || 5,
+                        reviewsCount: item.reviewsCount || 100,
+                        image: item.image,
+                        description: `${brandName} ${item.name}`,
+                        badge: item.badge || undefined
+                      } as Product)}
                       className="w-full aspect-square bg-[#f8f9fa] rounded-lg overflow-hidden border border-gray-100 mb-3 flex items-center justify-center p-2 cursor-pointer relative"
                     >
                       <img
@@ -151,7 +156,16 @@ export const BudgetHardwareSection: React.FC = () => {
                     </span>
 
                     <button
-                      onClick={() => addToCart(item, 1)}
+                      onClick={() => addToCart({
+                        id: item.id,
+                        name: item.name,
+                        category: item.catId || "kitchen-fittings",
+                        price: item.price,
+                        rating: item.rating || 5,
+                        reviewsCount: item.reviewsCount || 100,
+                        image: item.image,
+                        description: `${brandName} ${item.name}`
+                      } as Product, 1)}
                       className="p-1.5 bg-gray-900 hover:bg-red-700 text-white rounded-md transition-colors cursor-pointer"
                       title="Add to Cart"
                     >

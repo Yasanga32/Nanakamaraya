@@ -63,12 +63,83 @@ export const INITIAL_SLIDES: Slide[] = [
   }
 ];
 
+export interface BudgetItem {
+  id: string;
+  brandName: string;
+  name: string;
+  price: number;
+  rating?: number;
+  reviewsCount?: number;
+  badge?: string;
+  image: string;
+  catId?: string;
+}
+
+export const INITIAL_BUDGET_ITEMS: BudgetItem[] = [
+  {
+    id: "budget-1",
+    brandName: "Project Source",
+    name: "Dover Brushed Nickel 4-in Centerset Faucet",
+    price: 18500,
+    rating: 5,
+    reviewsCount: 1278,
+    badge: "1K+ bought last week",
+    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  },
+  {
+    id: "budget-2",
+    brandName: "Project Source",
+    name: "Tucker Stainless steel Single-handle Faucet",
+    price: 24900,
+    rating: 5,
+    reviewsCount: 1655,
+    badge: "100+ bought last week",
+    image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  },
+  {
+    id: "budget-3",
+    brandName: "Delta®",
+    name: "Classic Chrome 1-handle Multi-function Shower",
+    price: 32500,
+    rating: 4.8,
+    reviewsCount: 236,
+    badge: "1K+ bought last week",
+    image: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  },
+  {
+    id: "budget-4",
+    brandName: "allen + roth®",
+    name: "Harlow Simplefit Spot Free Stainless Faucet",
+    price: 29800,
+    rating: 4.9,
+    reviewsCount: 480,
+    badge: "500+ bought last week",
+    image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  },
+  {
+    id: "budget-5",
+    brandName: "Delta®",
+    name: "Foundations Chrome 1-Handle Bath Faucet",
+    price: 19500,
+    rating: 5,
+    reviewsCount: 890,
+    badge: "1K+ bought last week",
+    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  }
+];
+
 interface AdminDataContextType {
   slides: Slide[];
   offerProducts: OfferProductItem[];
   categories: Category[];
   products: Product[];
   brands: BrandItem[];
+  budgetItems: BudgetItem[];
   isLoading: boolean;
   
   // Handlers for Slides
@@ -94,6 +165,11 @@ interface AdminDataContextType {
   updateBrand: (id: string, updated: Partial<BrandItem>) => Promise<void>;
   deleteBrand: (id: string) => Promise<void>;
 
+  // Handlers for Budget Hardware Items
+  addBudgetItem: (item: Omit<BudgetItem, "id">) => Promise<void>;
+  updateBudgetItem: (id: string, updated: Partial<BudgetItem>) => Promise<void>;
+  deleteBudgetItem: (id: string) => Promise<void>;
+
   // Utilities
   resetToDefaults: () => Promise<void>;
 }
@@ -106,6 +182,7 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [categories, setCategories] = useState<Category[]>(CATEGORIES);
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const [brands, setBrands] = useState<BrandItem[]>(POPULAR_BRANDS);
+  const [budgetItems, setBudgetItems] = useState<BudgetItem[]>(INITIAL_BUDGET_ITEMS);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch initial data from MySQL via API Routes
@@ -113,12 +190,13 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     async function loadAllData() {
       try {
         setIsLoading(true);
-        const [resBanners, resOffers, resCats, resProds, resBrands] = await Promise.all([
+        const [resBanners, resOffers, resCats, resProds, resBrands, resBudget] = await Promise.all([
           fetch("/api/banners").then(r => r.ok ? r.json() : null),
           fetch("/api/offers").then(r => r.ok ? r.json() : null),
           fetch("/api/categories").then(r => r.ok ? r.json() : null),
           fetch("/api/products").then(r => r.ok ? r.json() : null),
-          fetch("/api/brands").then(r => r.ok ? r.json() : null)
+          fetch("/api/brands").then(r => r.ok ? r.json() : null),
+          fetch("/api/budget-hardware").then(r => r.ok ? r.json() : null)
         ]);
 
         if (Array.isArray(resBanners) && resBanners.length > 0) setSlides(resBanners);
@@ -126,6 +204,7 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         if (Array.isArray(resCats) && resCats.length > 0) setCategories(resCats);
         if (Array.isArray(resProds) && resProds.length > 0) setProducts(resProds);
         if (Array.isArray(resBrands) && resBrands.length > 0) setBrands(resBrands);
+        if (Array.isArray(resBudget) && resBudget.length > 0) setBudgetItems(resBudget);
       } catch (err) {
         console.error("Failed to load data from API routes:", err);
       } finally {
@@ -321,15 +400,58 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
+  // --- Budget Hardware Item Handlers ---
+  const addBudgetItem = async (item: Omit<BudgetItem, "id">) => {
+    const newItem: BudgetItem = { ...item, id: `budget-${Date.now()}` };
+    setBudgetItems(prev => [newItem, ...prev]);
+
+    try {
+      await fetch("/api/budget-hardware", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newItem)
+      });
+    } catch (e) {
+      console.error("API call failed for addBudgetItem:", e);
+    }
+  };
+
+  const updateBudgetItem = async (id: string, updated: Partial<BudgetItem>) => {
+    const existing = budgetItems.find(b => b.id === id);
+    if (!existing) return;
+    const fullItem = { ...existing, ...updated };
+    setBudgetItems(prev => prev.map(b => b.id === id ? fullItem : b));
+
+    try {
+      await fetch(`/api/budget-hardware/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullItem)
+      });
+    } catch (e) {
+      console.error("API call failed for updateBudgetItem:", e);
+    }
+  };
+
+  const deleteBudgetItem = async (id: string) => {
+    setBudgetItems(prev => prev.filter(b => b.id !== id));
+    try {
+      await fetch(`/api/budget-hardware/${id}`, { method: "DELETE" });
+    } catch (e) {
+      console.error("API call failed for deleteBudgetItem:", e);
+    }
+  };
+
   const resetToDefaults = async () => {
     setIsLoading(true);
     try {
-      const [resBanners, resOffers, resCats, resProds, resBrands] = await Promise.all([
+      const [resBanners, resOffers, resCats, resProds, resBrands, resBudget] = await Promise.all([
         fetch("/api/banners").then(r => r.json()),
         fetch("/api/offers").then(r => r.json()),
         fetch("/api/categories").then(r => r.json()),
         fetch("/api/products").then(r => r.json()),
-        fetch("/api/brands").then(r => r.json())
+        fetch("/api/brands").then(r => r.json()),
+        fetch("/api/budget-hardware").then(r => r.json())
       ]);
 
       setSlides(resBanners || INITIAL_SLIDES);
@@ -337,6 +459,7 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       setCategories(resCats || CATEGORIES);
       setProducts(resProds || PRODUCTS);
       setBrands(resBrands || POPULAR_BRANDS);
+      setBudgetItems(resBudget || INITIAL_BUDGET_ITEMS);
     } catch (e) {
       console.error("Failed to reset/reload defaults from DB:", e);
     } finally {
@@ -352,6 +475,7 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         categories,
         products,
         brands,
+        budgetItems,
         isLoading,
         addSlide,
         updateSlide,
@@ -366,6 +490,9 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         addBrand,
         updateBrand,
         deleteBrand,
+        addBudgetItem,
+        updateBudgetItem,
+        deleteBudgetItem,
         resetToDefaults
       }}
     >

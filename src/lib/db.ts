@@ -103,6 +103,64 @@ const SEED_BRANDS = [
   { id: "brand-8", name: "Yale®", logo: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=300", catId: "smart-living" }
 ];
 
+const SEED_BUDGET_ITEMS = [
+  {
+    id: "budget-1",
+    brandName: "Project Source",
+    name: "Dover Brushed Nickel 4-in Centerset Faucet",
+    price: 18500,
+    rating: 5,
+    reviewsCount: 1278,
+    badge: "1K+ bought last week",
+    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  },
+  {
+    id: "budget-2",
+    brandName: "Project Source",
+    name: "Tucker Stainless steel Single-handle Faucet",
+    price: 24900,
+    rating: 5,
+    reviewsCount: 1655,
+    badge: "100+ bought last week",
+    image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  },
+  {
+    id: "budget-3",
+    brandName: "Delta®",
+    name: "Classic Chrome 1-handle Multi-function Shower",
+    price: 32500,
+    rating: 4.8,
+    reviewsCount: 236,
+    badge: "1K+ bought last week",
+    image: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  },
+  {
+    id: "budget-4",
+    brandName: "allen + roth®",
+    name: "Harlow Simplefit Spot Free Stainless Faucet",
+    price: 29800,
+    rating: 4.9,
+    reviewsCount: 480,
+    badge: "500+ bought last week",
+    image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  },
+  {
+    id: "budget-5",
+    brandName: "Delta®",
+    name: "Foundations Chrome 1-Handle Bath Faucet",
+    price: 19500,
+    rating: 5,
+    reviewsCount: 890,
+    badge: "1K+ bought last week",
+    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=600",
+    catId: "kitchen-fittings"
+  }
+];
+
 export async function initDB() {
   try {
     const connection = await pool.getConnection();
@@ -179,6 +237,22 @@ export async function initDB() {
           id VARCHAR(100) PRIMARY KEY,
           name VARCHAR(255) NOT NULL,
           logo TEXT NOT NULL,
+          catId VARCHAR(100),
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+      `);
+
+      // 6. Create Budget Items table
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS budget_items (
+          id VARCHAR(100) PRIMARY KEY,
+          brandName VARCHAR(255) NOT NULL,
+          name VARCHAR(255) NOT NULL,
+          price DOUBLE NOT NULL,
+          rating DOUBLE DEFAULT 5,
+          reviewsCount INT DEFAULT 1200,
+          badge VARCHAR(100) DEFAULT '1K+ bought last week',
+          image TEXT NOT NULL,
           catId VARCHAR(100),
           createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -271,6 +345,17 @@ export async function initDB() {
           await connection.query(
             "INSERT INTO brands (id, name, logo, catId) VALUES (?, ?, ?, ?)",
             [brand.id, brand.name, brand.logo, brand.catId || null]
+          );
+        }
+      }
+
+      // Seed Budget Items
+      const [budgetRows]: any = await connection.query("SELECT COUNT(*) as count FROM budget_items");
+      if (Number(budgetRows[0]?.count) === 0) {
+        for (const item of SEED_BUDGET_ITEMS) {
+          await connection.query(
+            "INSERT INTO budget_items (id, brandName, name, price, rating, reviewsCount, badge, image, catId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [item.id, item.brandName, item.name, item.price, item.rating || 5, item.reviewsCount || 100, item.badge || null, item.image, item.catId || null]
           );
         }
       }
