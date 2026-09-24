@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { HeroSlider } from "@/components/HeroSlider";
 import { OfferProducts } from "@/components/OfferProducts";
+import { BudgetHardwareSection } from "@/components/BudgetHardwareSection";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { PopularBrands } from "@/components/PopularBrands";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
@@ -30,14 +31,17 @@ export default function Home() {
       {/* Offers Products Topic with Cards & Horizontal Arrow Navigation */}
       <OfferProducts />
 
+      {/* Budget-Friendly Faucets & Hardware Section matching reference image */}
+      <BudgetHardwareSection />
+
       {/* Category Grid Cards */}
       <CategoryGrid />
 
-      {/* Popular Brands Row matching reference image */}
-      <PopularBrands />
-
       {/* Product Catalog & Filter Section ("All Collections") */}
       <FeaturedProducts />
+
+      {/* Popular Brands Row matching reference image */}
+      <PopularBrands />
 
       {/* Slide-over Cart & Quick View Modals */}
       <CartDrawer />

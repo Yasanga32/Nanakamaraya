@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { CATEGORIES, Category } from "@/data/categories";
 import { PRODUCTS, Product } from "@/data/products";
 import { OFFER_PRODUCTS, OfferProductItem } from "@/components/OfferProducts";
+import { POPULAR_BRANDS, BrandItem } from "@/components/PopularBrands";
 
 export interface SlideHotspot {
   x: number;
@@ -67,6 +68,7 @@ interface AdminDataContextType {
   offerProducts: OfferProductItem[];
   categories: Category[];
   products: Product[];
+  brands: BrandItem[];
   isLoading: boolean;
   
   // Handlers for Slides
@@ -87,6 +89,11 @@ interface AdminDataContextType {
   updateProduct: (id: string, updated: Partial<Product>) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
 
+  // Handlers for Brands
+  addBrand: (brand: Omit<BrandItem, "id">) => Promise<void>;
+  updateBrand: (id: string, updated: Partial<BrandItem>) => Promise<void>;
+  deleteBrand: (id: string) => Promise<void>;
+
   // Utilities
   resetToDefaults: () => Promise<void>;
 }
@@ -98,6 +105,7 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [offerProducts, setOfferProducts] = useState<OfferProductItem[]>(OFFER_PRODUCTS);
   const [categories, setCategories] = useState<Category[]>(CATEGORIES);
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [brands, setBrands] = useState<BrandItem[]>(POPULAR_BRANDS);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch initial data from MySQL via API Routes
@@ -105,32 +113,32 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     async function loadAllData() {
       try {
         setIsLoading(true);
-        const [resBanners, resOffers, resCats, resProds] = await Promise.all([
+        const [resBanners, resOffers, resCats, resProds, resBrands] = await Promise.all([
           fetch("/api/banners").then(r => r.ok ? r.json() : null),
           fetch("/api/offers").then(r => r.ok ? r.json() : null),
           fetch("/api/categories").then(r => r.ok ? r.json() : null),
-          fetch("/api/products").then(r => r.ok ? r.json() : null)
+          fetch("/api/products").then(r => r.ok ? r.json() : null),
+          fetch("/api/brands").then(r => r.ok ? r.json() : null)
         ]);
 
         if (Array.isArray(resBanners) && resBanners.length > 0) setSlides(resBanners);
         if (Array.isArray(resOffers) && resOffers.length > 0) setOfferProducts(resOffers);
         if (Array.isArray(resCats) && resCats.length > 0) setCategories(resCats);
         if (Array.isArray(resProds) && resProds.length > 0) setProducts(resProds);
+        if (Array.isArray(resBrands) && resBrands.length > 0) setBrands(resBrands);
       } catch (err) {
         console.error("Failed to load data from API routes:", err);
       } finally {
         setIsLoading(false);
       }
     }
-
     loadAllData();
   }, []);
 
   // --- Slide Handlers ---
   const addSlide = async (slide: Omit<Slide, "id">) => {
-    const newId = `slide-${Date.now()}`;
-    const newSlide: Slide = { ...slide, id: newId };
-    setSlides(prev => [...prev, newSlide]);
+    const newSlide: Slide = { ...slide, id: `slide-${Date.now()}` };
+    setSlides(prev => [newSlide, ...prev]);
 
     try {
       await fetch("/api/banners", {
@@ -189,7 +197,7 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     const existing = offerProducts.find(o => o.id === id);
     if (!existing) return;
     const fullItem = { ...existing, ...updated };
-    setOfferProducts(prev => prev.map(item => item.id === id ? fullItem : item));
+    setOfferProducts(prev => prev.map(o => o.id === id ? fullItem : o));
 
     try {
       await fetch(`/api/offers/${id}`, {
@@ -271,21 +279,64 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
+  // --- Brand Handlers ---
+  const addBrand = async (brand: Omit<BrandItem, "id">) => {
+    const newBrand: BrandItem = { ...brand, id: `brand-${Date.now()}` };
+    setBrands(prev => [newBrand, ...prev]);
+
+    try {
+      await fetch("/api/brands", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBrand)
+      });
+    } catch (e) {
+      console.error("API call failed for addBrand:", e);
+    }
+  };
+
+  const updateBrand = async (id: string, updated: Partial<BrandItem>) => {
+    const existing = brands.find(b => b.id === id);
+    if (!existing) return;
+    const fullBrand = { ...existing, ...updated };
+    setBrands(prev => prev.map(b => b.id === id ? fullBrand : b));
+
+    try {
+      await fetch(`/api/brands/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullBrand)
+      });
+    } catch (e) {
+      console.error("API call failed for updateBrand:", e);
+    }
+  };
+
+  const deleteBrand = async (id: string) => {
+    setBrands(prev => prev.filter(b => b.id !== id));
+    try {
+      await fetch(`/api/brands/${id}`, { method: "DELETE" });
+    } catch (e) {
+      console.error("API call failed for deleteBrand:", e);
+    }
+  };
+
   const resetToDefaults = async () => {
     setIsLoading(true);
     try {
-      // Refresh state from DB
-      const [resBanners, resOffers, resCats, resProds] = await Promise.all([
+      const [resBanners, resOffers, resCats, resProds, resBrands] = await Promise.all([
         fetch("/api/banners").then(r => r.json()),
         fetch("/api/offers").then(r => r.json()),
         fetch("/api/categories").then(r => r.json()),
-        fetch("/api/products").then(r => r.json())
+        fetch("/api/products").then(r => r.json()),
+        fetch("/api/brands").then(r => r.json())
       ]);
 
       setSlides(resBanners || INITIAL_SLIDES);
       setOfferProducts(resOffers || OFFER_PRODUCTS);
       setCategories(resCats || CATEGORIES);
       setProducts(resProds || PRODUCTS);
+      setBrands(resBrands || POPULAR_BRANDS);
     } catch (e) {
       console.error("Failed to reset/reload defaults from DB:", e);
     } finally {
@@ -300,6 +351,7 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         offerProducts,
         categories,
         products,
+        brands,
         isLoading,
         addSlide,
         updateSlide,
@@ -311,6 +363,9 @@ export const AdminDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         addProduct,
         updateProduct,
         deleteProduct,
+        addBrand,
+        updateBrand,
+        deleteBrand,
         resetToDefaults
       }}
     >

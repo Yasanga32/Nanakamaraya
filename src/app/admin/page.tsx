@@ -8,18 +8,20 @@ import { OffersManager } from "@/components/admin/OffersManager";
 import { BannerManager } from "@/components/admin/BannerManager";
 import { CategoryManager } from "@/components/admin/CategoryManager";
 import { ProductCatalogManager } from "@/components/admin/ProductCatalogManager";
+import { BrandManager } from "@/components/admin/BrandManager";
 import {
   Sparkles,
   Image as ImageIcon,
   Grid,
   Package,
+  Award,
   ExternalLink,
   RotateCcw,
   CheckCircle,
   Loader2
 } from "lucide-react";
 
-type TabType = "offers" | "banners" | "categories" | "catalog";
+type TabType = "offers" | "banners" | "categories" | "catalog" | "brands";
 
 function AdminDashboardContent() {
   const searchParams = useSearchParams();
@@ -28,7 +30,7 @@ function AdminDashboardContent() {
   // Get active tab from URL search parameters (defaults to 'offers')
   const activeTab = (searchParams.get("tab") as TabType) || "offers";
 
-  const { slides, offerProducts, categories, products, resetToDefaults } = useAdminData();
+  const { slides, offerProducts, categories, products, brands, resetToDefaults } = useAdminData();
   const [showResetToast, setShowResetToast] = useState(false);
 
   const handleTabChange = (tab: TabType) => {
@@ -96,7 +98,7 @@ function AdminDashboardContent() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
         
         {/* Metric Summary Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           
           <div
             onClick={() => handleTabChange("offers")}
@@ -154,6 +156,20 @@ function AdminDashboardContent() {
             <span className="text-[11px] text-gray-500 mt-1 block">Full store items</span>
           </div>
 
+          <div
+            onClick={() => handleTabChange("brands")}
+            className={`p-4 rounded-xl border transition-all cursor-pointer ${
+              activeTab === "brands" ? "bg-white border-red-600 shadow-md ring-2 ring-red-600/20" : "bg-white border-gray-200 hover:border-gray-300 shadow-xs"
+            }`}
+          >
+            <div className="flex items-center justify-between text-gray-500 mb-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Popular Brands</span>
+              <Award className="w-5 h-5 text-amber-500" />
+            </div>
+            <div className="text-2xl font-black text-gray-900">{brands.length}</div>
+            <span className="text-[11px] text-gray-500 mt-1 block">Partner brand logos</span>
+          </div>
+
         </div>
 
         {/* Section Navigation Tabs */}
@@ -205,6 +221,18 @@ function AdminDashboardContent() {
             <Package className="w-4 h-4" />
             <span>Product Catalog</span>
           </button>
+
+          <button
+            onClick={() => handleTabChange("brands")}
+            className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all shrink-0 cursor-pointer ${
+              activeTab === "brands"
+                ? "bg-red-700 text-white shadow-xs"
+                : "bg-white text-gray-700 hover:bg-gray-200 border border-gray-200"
+            }`}
+          >
+            <Award className="w-4 h-4" />
+            <span>Popular Brands</span>
+          </button>
         </div>
 
         {/* Tab Content Display */}
@@ -213,6 +241,7 @@ function AdminDashboardContent() {
           {activeTab === "banners" && <BannerManager />}
           {activeTab === "categories" && <CategoryManager />}
           {activeTab === "catalog" && <ProductCatalogManager />}
+          {activeTab === "brands" && <BrandManager />}
         </div>
 
       </main>

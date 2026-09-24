@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useCart } from "@/context/CartContext";
+import { useAdminData } from "@/context/AdminDataContext";
 
 export interface BrandItem {
   id: string;
@@ -62,7 +63,10 @@ export const POPULAR_BRANDS: BrandItem[] = [
 ];
 
 export const PopularBrands: React.FC = () => {
-  const { setSelectedCategory, setSearchQuery } = useCart();
+  const { setSelectedCategory } = useCart();
+  const { brands: adminBrands } = useAdminData();
+
+  const brandsToRender = adminBrands && adminBrands.length > 0 ? adminBrands : POPULAR_BRANDS;
 
   const handleBrandClick = (brand: BrandItem) => {
     if (brand.catId) {
@@ -86,7 +90,7 @@ export const PopularBrands: React.FC = () => {
 
       {/* Grid of Round Brand Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6 justify-items-center">
-        {POPULAR_BRANDS.map((brand) => (
+        {brandsToRender.map((brand) => (
           <div
             key={brand.id}
             onClick={() => handleBrandClick(brand)}
@@ -94,9 +98,18 @@ export const PopularBrands: React.FC = () => {
           >
             {/* Round White Circle with Border */}
             <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border border-gray-300/80 bg-white flex items-center justify-center p-3 shadow-2xs group-hover:shadow-lg group-hover:border-red-600 group-hover:scale-105 group-hover:ring-4 group-hover:ring-red-50 transition-all duration-300 overflow-hidden">
-              <span className="font-serif font-black text-sm sm:text-base text-gray-800 tracking-tight group-hover:text-red-700 transition-colors uppercase">
-                {brand.name.replace("®", "")}
-              </span>
+              {brand.logo ? (
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-300"
+                  onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+                />
+              ) : (
+                <span className="font-serif font-black text-sm sm:text-base text-gray-800 tracking-tight group-hover:text-red-700 transition-colors uppercase">
+                  {brand.name.replace("®", "")}
+                </span>
+              )}
             </div>
 
             {/* Brand Label Below Circle */}

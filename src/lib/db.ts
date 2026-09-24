@@ -92,6 +92,17 @@ const SEED_OFFERS = [
   }
 ];
 
+const SEED_BRANDS = [
+  { id: "brand-1", name: "Blum®", logo: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=300", catId: "furniture-hardware" },
+  { id: "brand-2", name: "Delta®", logo: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=300", catId: "kitchen-fittings" },
+  { id: "brand-3", name: "KOHLER", logo: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=300", catId: "architectural-hardware" },
+  { id: "brand-4", name: "Pfister", logo: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&q=80&w=300", catId: "kitchen-fittings" },
+  { id: "brand-5", name: "Häfele®", logo: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=300", catId: "furniture-hardware" },
+  { id: "brand-6", name: "Dormakaba®", logo: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=300", catId: "smart-living" },
+  { id: "brand-7", name: "Grohe®", logo: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=300", catId: "kitchen-fittings" },
+  { id: "brand-8", name: "Yale®", logo: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=300", catId: "smart-living" }
+];
+
 export async function initDB() {
   try {
     const connection = await pool.getConnection();
@@ -158,6 +169,17 @@ export async function initDB() {
           inStock TINYINT(1) DEFAULT 1,
           sku VARCHAR(100),
           specs JSON,
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+      `);
+
+      // 5. Create Brands table
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS brands (
+          id VARCHAR(100) PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          logo TEXT NOT NULL,
+          catId VARCHAR(100),
           createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
       `);
@@ -238,6 +260,17 @@ export async function initDB() {
               prod.sku,
               JSON.stringify(prod.specs || {})
             ]
+          );
+        }
+      }
+
+      // Seed Brands
+      const [brandRows]: any = await connection.query("SELECT COUNT(*) as count FROM brands");
+      if (Number(brandRows[0]?.count) === 0) {
+        for (const brand of SEED_BRANDS) {
+          await connection.query(
+            "INSERT INTO brands (id, name, logo, catId) VALUES (?, ?, ?, ?)",
+            [brand.id, brand.name, brand.logo, brand.catId || null]
           );
         }
       }
