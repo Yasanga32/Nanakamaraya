@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Search, User, ShoppingCart, ChevronDown } from "lucide-react";
+import { Search, UserCircle, ShoppingCart, ChevronDown } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { CATEGORIES } from "@/data/categories";
 
@@ -22,7 +22,10 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Brand Logo */}
-        <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div 
+          className="flex items-center gap-3 cursor-pointer select-none" 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
           <img 
             src="/logo.png" 
             alt="M.M. NOORBHOY & CO" 
@@ -63,33 +66,42 @@ export const Header: React.FC = () => {
           </button>
         </form>
 
-        {/* Right Info & Actions */}
-        <div className="flex items-center gap-5 text-gray-700">
+        {/* Right Action Icons: Sign In & Cart */}
+        <div className="flex items-center gap-6 sm:gap-8 text-gray-800">
 
-          {/* User Account */}
+          {/* Sign In Action */}
           <button 
-            aria-label="User Account"
-            className="p-1.5 hover:text-red-600 transition-colors relative" 
-            title="Account"
+            aria-label="Sign In"
+            className="flex flex-col items-center justify-center group cursor-pointer text-gray-900 hover:text-red-700 transition-colors"
+            title="Sign In"
           >
-            <User className="w-5 h-5 text-gray-800" />
+            <UserCircle className="w-7 h-7 stroke-[1.8] group-hover:text-red-700 transition-colors" />
+            <span className="text-xs font-medium text-gray-900 group-hover:text-red-700 mt-0.5 tracking-tight">
+              Sign In
+            </span>
           </button>
 
-          {/* Shopping Cart Button */}
+          {/* Shopping Cart Action */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="relative p-1.5 hover:text-red-600 transition-colors flex items-center gap-1 group"
-            title="Shopping Cart"
+            className="flex flex-col items-center justify-center group cursor-pointer text-gray-900 hover:text-red-700 transition-colors relative"
+            title="Cart"
           >
-            <ShoppingCart className="w-5 h-5 text-gray-800 group-hover:text-red-600 transition-colors" />
-            {totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-2 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
-                {totalItems}
-              </span>
-            )}
+            <div className="relative">
+              <ShoppingCart className="w-7 h-7 stroke-[1.8] group-hover:text-red-700 transition-colors" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1.5 -right-2 bg-red-600 text-white text-[10px] font-bold w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-xs">
+                  {totalItems}
+                </span>
+              )}
+            </div>
+            <span className="text-xs font-medium text-gray-900 group-hover:text-red-700 mt-0.5 tracking-tight">
+              Cart
+            </span>
           </button>
 
         </div>
+
       </div>
     </header>
   );
