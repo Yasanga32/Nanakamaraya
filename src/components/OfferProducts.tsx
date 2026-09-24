@@ -172,7 +172,7 @@ export const OfferProducts: React.FC = () => {
   };
 
   return (
-    <section className="w-full bg-[#f8f9fa] py-8 border-b border-gray-200">
+    <section id="offers-section" className="w-full bg-[#f8f9fa] py-8 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Topic Header with Arrow Icon Controls */}

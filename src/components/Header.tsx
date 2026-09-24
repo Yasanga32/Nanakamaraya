@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Search, UserCircle, ShoppingCart, ChevronDown } from "lucide-react";
+import { Search, UserCircle, ShoppingCart, ChevronDown, Tag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { CATEGORIES } from "@/data/categories";
 
@@ -13,6 +13,13 @@ export const Header: React.FC = () => {
     const catalogSection = document.getElementById("catalog-section");
     if (catalogSection) {
       catalogSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleDealsClick = () => {
+    const offersSection = document.getElementById("offers-section");
+    if (offersSection) {
+      offersSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -66,8 +73,18 @@ export const Header: React.FC = () => {
           </button>
         </form>
 
-        {/* Right Action Icons: Sign In & Cart */}
-        <div className="flex items-center gap-6 sm:gap-8 text-gray-800">
+        {/* Right Action Items: Deals Button, Sign In & Cart */}
+        <div className="flex items-center gap-4 sm:gap-6">
+
+          {/* Deals Red Background Button */}
+          <button
+            onClick={handleDealsClick}
+            className="bg-[#c83232] hover:bg-[#a52424] text-white font-extrabold text-xs sm:text-sm px-4 py-2 rounded-md flex items-center gap-2 transition-colors shadow-xs hover:shadow-md cursor-pointer shrink-0"
+            title="View Offers & Deals"
+          >
+            <Tag className="w-4 h-4 stroke-[2.5]" />
+            <span>Deals</span>
+          </button>
 
           {/* Sign In Action */}
           <button 
