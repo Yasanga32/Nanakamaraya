@@ -79,7 +79,7 @@ export const Header: React.FC = () => {
           {/* Deals Red Background Button */}
           <button
             onClick={handleDealsClick}
-            className="bg-[#c83232] hover:bg-[#a52424] text-white font-extrabold text-xs sm:text-sm px-4 py-2 rounded-md flex items-center gap-2 transition-colors shadow-xs hover:shadow-md cursor-pointer shrink-0"
+            className="bg-[#E7000B] hover:bg-[#c60009] text-white font-extrabold text-xs sm:text-sm px-4 py-2 rounded-md flex items-center gap-2 transition-colors shadow-xs hover:shadow-md cursor-pointer shrink-0"
             title="View Offers & Deals"
           >
             <Tag className="w-4 h-4 stroke-[2.5]" />

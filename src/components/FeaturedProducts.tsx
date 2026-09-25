@@ -78,12 +78,12 @@ export const FeaturedProducts: React.FC = () => {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-600"></span>
-            <h2 className="text-2xl font-serif font-bold text-gray-900 tracking-tight">
-              {selectedCategoryTitle}
-            </h2>
-          </div>
+          <span className="text-[11px] font-extrabold tracking-widest text-[#E7000B] uppercase block mb-1 font-sans">
+            EXPLORE STORE CATALOG
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-black font-sans text-gray-900 tracking-tight">
+            {selectedCategoryTitle}
+          </h2>
           <p className="text-xs text-gray-500 mt-0.5">
             Showing {filteredProducts.length > 0 ? `${startIndex + 1}–${Math.min(endIndex, filteredProducts.length)} of ${filteredProducts.length}` : 0} items
           </p>
@@ -207,11 +207,11 @@ export const FeaturedProducts: React.FC = () => {
                 <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                   <div>
                     <div className="text-base font-extrabold text-gray-900">
-                      ${product.price.toFixed(2)}
+                      LKR {product.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                     </div>
                     {product.originalPrice && (
                       <div className="text-xs text-gray-400 line-through">
-                        ${product.originalPrice.toFixed(2)}
+                        LKR {product.originalPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                       </div>
                     )}
                   </div>

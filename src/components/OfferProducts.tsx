@@ -176,12 +176,12 @@ export const OfferProducts: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Topic Header with Arrow Icon Controls */}
-        <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-200">
+        <div className="flex items-center justify-between mb-6 pb-3 border-b border-gray-200">
           <div>
-            <span className="text-[10px] font-extrabold tracking-widest text-red-600 uppercase block mb-1">
+            <span className="text-[11px] font-extrabold tracking-widest text-[#E7000B] uppercase block mb-1 font-sans">
               LIMITED TIME PROMOTIONS
             </span>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 font-serif tracking-tight flex items-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 font-sans tracking-tight uppercase">
               OFFERS PRODUCTS
             </h2>
           </div>

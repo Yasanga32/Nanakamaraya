@@ -71,7 +71,7 @@ export const CartDrawer: React.FC = () => {
                   <h4 className="text-xs font-bold text-gray-900 truncate">{product.name}</h4>
                   <p className="text-[10px] text-gray-400 uppercase font-semibold">{product.sku}</p>
                   <div className="text-xs font-extrabold text-red-700 mt-0.5">
-                    ${(product.price * quantity).toFixed(2)}
+                    LKR {(product.price * quantity).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                   </div>
 
                   {/* Quantity Controls */}
@@ -111,7 +111,7 @@ export const CartDrawer: React.FC = () => {
           <div className="p-4 bg-gray-50 border-t border-gray-200 space-y-3">
             <div className="flex justify-between items-center text-xs font-bold text-gray-700">
               <span>Subtotal</span>
-              <span className="text-base text-gray-900">${subtotal.toFixed(2)}</span>
+              <span className="text-base text-gray-900">LKR {subtotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
             </div>
 
             <p className="text-[10px] text-gray-500">

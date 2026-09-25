@@ -75,10 +75,10 @@ export const ProductModal: React.FC = () => {
               </div>
 
               <div className="text-2xl font-black text-red-700 mt-3">
-                ${quickViewProduct.price.toFixed(2)}
+                LKR {quickViewProduct.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                 {quickViewProduct.originalPrice && (
                   <span className="text-xs text-gray-400 font-normal line-through ml-2">
-                    ${quickViewProduct.originalPrice.toFixed(2)}
+                    LKR {quickViewProduct.originalPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                   </span>
                 )}
               </div>
@@ -131,7 +131,7 @@ export const ProductModal: React.FC = () => {
                   ) : (
                     <>
                       <ShoppingBag className="w-4 h-4" />
-                      <span>Add to Cart (${(quickViewProduct.price * qty).toFixed(2)})</span>
+                      <span>Add to Cart (LKR {(quickViewProduct.price * qty).toLocaleString("en-US", { minimumFractionDigits: 2 })})</span>
                     </>
                   )}
                 </button>

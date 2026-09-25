@@ -160,7 +160,7 @@ export const ProductCatalogManager: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-gray-700 mb-1">Selling Price (LKR / $)</label>
+                  <label className="block text-gray-700 mb-1">Selling Price (LKR)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -288,7 +288,7 @@ export const ProductCatalogManager: React.FC = () => {
                   </td>
                   <td className="p-3 font-mono text-gray-500">{prod.sku}</td>
                   <td className="p-3 text-gray-700 font-semibold">{prod.category}</td>
-                  <td className="p-3 font-bold text-gray-900">${prod.price.toFixed(2)}</td>
+                  <td className="p-3 font-bold text-gray-900">LKR {prod.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
                   <td className="p-3 text-right space-x-2">
                     <button
                       onClick={() => handleOpenEdit(prod)}

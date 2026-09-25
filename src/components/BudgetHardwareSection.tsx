@@ -31,10 +31,15 @@ export const BudgetHardwareSection: React.FC = () => {
     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 tracking-tight">
-          Budget-Friendly Faucets & Hardware
-        </h2>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 pb-3 border-b border-gray-200 gap-2">
+        <div>
+          <span className="text-[11px] font-extrabold tracking-widest text-[#E7000B] uppercase block mb-1 font-sans">
+            CURATED VALUE SELECTION
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-black font-sans tracking-tight text-gray-900">
+            Budget-Friendly Faucets &amp; Hardware
+          </h2>
+        </div>
         
         {/* Carousel Arrow Controls */}
         <div className="hidden sm:flex items-center gap-2">

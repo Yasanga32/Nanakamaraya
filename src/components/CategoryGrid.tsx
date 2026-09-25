@@ -24,11 +24,14 @@ export const CategoryGrid: React.FC = () => {
       
       {/* Title Header */}
       <div className="text-center mb-10">
-        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 tracking-tight">
+        <span className="text-[11px] font-extrabold tracking-widest text-[#E7000B] uppercase block mb-1 font-sans">
+          BROWSE OUR CATALOG
+        </span>
+        <h2 className="text-2xl sm:text-3xl font-black font-sans tracking-tight text-gray-900">
           Shop by Category
         </h2>
-        <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-semibold">
-          Explore our extensive range of architectural hardware & interior solutions
+        <p className="text-xs text-gray-500 mt-1 max-w-lg mx-auto font-medium">
+          Explore our extensive range of architectural hardware &amp; interior solutions
         </p>
       </div>
 

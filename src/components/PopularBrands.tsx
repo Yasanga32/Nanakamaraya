@@ -82,8 +82,11 @@ export const PopularBrands: React.FC = () => {
     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-gray-200">
       
       {/* Title */}
-      <div className="mb-8">
-        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 tracking-tight">
+      <div className="mb-8 pb-3 border-b border-gray-200">
+        <span className="text-[11px] font-extrabold tracking-widest text-[#E7000B] uppercase block mb-1 font-sans">
+          TRUSTED PARTNERS
+        </span>
+        <h2 className="text-2xl sm:text-3xl font-black font-sans text-gray-900 tracking-tight">
           Popular Brands
         </h2>
       </div>

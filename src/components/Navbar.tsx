@@ -92,7 +92,7 @@ export const Navbar: React.FC = () => {
         <div className="hidden xl:flex items-center">
           <a
             href="tel:072211324"
-            className="bg-[#c83232] hover:bg-[#a52424] text-white px-3.5 py-2 rounded-md text-xs font-bold tracking-wide flex items-center gap-2 transition-all shadow-xs"
+            className="bg-[#E7000B] hover:bg-[#c60009] text-white px-3.5 py-2 rounded-md text-xs font-bold tracking-wide flex items-center gap-2 transition-all shadow-xs"
             title="Call Hotline"
           >
             <PhoneCall className="w-3.5 h-3.5 text-white shrink-0" />
@@ -112,7 +112,7 @@ export const Navbar: React.FC = () => {
 
           <a
             href="tel:072211324"
-            className="bg-[#c83232] hover:bg-[#a52424] text-white px-2.5 py-1.5 rounded text-[11px] font-bold flex items-center gap-1.5"
+            className="bg-[#E7000B] hover:bg-[#c60009] text-white px-2.5 py-1.5 rounded text-[11px] font-bold flex items-center gap-1.5"
           >
             <PhoneCall className="w-3 h-3 text-white shrink-0" />
             <span>072211324</span>
@@ -149,7 +149,7 @@ export const Navbar: React.FC = () => {
           <div className="pt-2">
             <a
               href="tel:072211324"
-              className="bg-[#c83232] text-white py-2 px-3 rounded text-xs font-bold flex items-center justify-center gap-2"
+              className="bg-[#E7000B] text-white py-2 px-3 rounded text-xs font-bold flex items-center justify-center gap-2"
             >
               <PhoneCall className="w-3.5 h-3.5" />
               <span>072211324 / 0754232212</span>
