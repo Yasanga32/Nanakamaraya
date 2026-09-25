@@ -35,7 +35,7 @@ export const Header: React.FC = () => {
         >
           <img 
             src="/logo.png" 
-            alt="M.M. NOORBHOY & CO" 
+            alt="nanakamaraya.lk" 
             className="h-12 w-auto object-contain"
           />
         </div>

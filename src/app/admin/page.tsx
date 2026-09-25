@@ -57,7 +57,7 @@ function AdminDashboardContent() {
           <div className="flex items-center gap-3">
             <img 
               src="/logo.png" 
-              alt="M.M. NOORBHOY & CO" 
+              alt="nanakamaraya.lk" 
               className="h-9 w-auto object-contain bg-white/10 p-1 rounded" 
             />
             <div className="bg-red-700 text-white font-serif font-bold text-xs px-2.5 py-1 rounded shadow-xs">

@@ -23,7 +23,7 @@ export const AboutUsSection: React.FC = () => {
         <div className="lg:col-span-6 relative min-h-[300px] sm:min-h-[400px] bg-gray-200 overflow-hidden">
           <img
             src="/about-us.jpg"
-            alt="Liyanage Hardware Showroom"
+            alt="nanakamaraya.lk Showroom"
             className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
           />
         </div>
@@ -36,7 +36,7 @@ export const AboutUsSection: React.FC = () => {
           </h3>
 
           <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-sans">
-            At Liyanage Hardware, we take pride in being your trusted partner for all construction and home improvement needs. With a strong commitment to quality, reliability, and customer satisfaction, we have been serving our community with top-notch hardware products for years.
+            At nanakamaraya.lk, we take pride in being your trusted partner for all construction and home improvement needs. With a strong commitment to quality, reliability, and customer satisfaction, we have been serving our community with top-notch hardware products for years.
           </p>
 
           <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-sans">

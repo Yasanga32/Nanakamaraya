@@ -158,7 +158,7 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const orderRef = `NOORB-${Date.now().toString().slice(-6)}`;
+      const orderRef = `NANAKA-${Date.now().toString().slice(-6)}`;
       const orderData = {
         orderRef,
         date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
                   </p>
                   <div className="font-mono text-[11px] bg-white p-3 rounded border border-amber-200 space-y-1">
                     <div>Bank: <strong>Commercial Bank of Ceylon PLC</strong></div>
-                    <div>Account Name: <strong>M.M. NOORBHOY & CO</strong></div>
+                    <div>Account Name: <strong>nanakamaraya.lk</strong></div>
                     <div>Account Number: <strong>1000 4829 5012</strong></div>
                     <div>Branch: <strong>Colombo Main Branch (001)</strong></div>
                   </div>

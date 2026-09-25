@@ -424,7 +424,7 @@ export default function ProductDetailPage() {
                 <h3 className="text-sm font-bold text-gray-900 font-serif mb-2">About {product.name}</h3>
                 <p>{product.description}</p>
                 <p>
-                  Established in 1902, M.M. NOORBHOY & CO supplies Sri Lanka&apos;s finest architectural hardware, bathroom fittings, acoustic wall panels, and smart living solutions. Every item is inspected for structural durability, high-traffic usage, and luxury aesthetics.
+                  Established in 1902, nanakamaraya.lk supplies Sri Lanka&apos;s finest architectural hardware, bathroom fittings, acoustic wall panels, and smart living solutions. Every item is inspected for structural durability, high-traffic usage, and luxury aesthetics.
                 </p>
               </div>
             )}

@@ -80,7 +80,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-3">
               <img
                 src="/logo.png"
-                alt="M.M. NOORBHOY & CO"
+                alt="nanakamaraya.lk"
                 className="h-10 w-auto object-contain bg-white/10 p-1 rounded"
               />
             </div>
@@ -247,7 +247,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-gray-900 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-500 gap-4">
-          <p suppressHydrationWarning>© {new Date().getFullYear()} M.M. NOORBHOY & CO. All Rights Reserved.</p>
+          <p suppressHydrationWarning>© {new Date().getFullYear()} nanakamaraya.lk. All Rights Reserved.</p>
           <div className="flex items-center gap-4 text-gray-400">
             <span>Visa</span>
             <span>Mastercard</span>
