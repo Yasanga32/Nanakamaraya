@@ -22,7 +22,7 @@ export const AboutUsSection: React.FC = () => {
         {/* Left Column: Building / Showroom Image */}
         <div className="lg:col-span-6 relative min-h-[300px] sm:min-h-[400px] bg-gray-200 overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&q=80&w=1200"
+            src="/about-us.jpg"
             alt="Liyanage Hardware Showroom"
             className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
           />

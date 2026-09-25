@@ -82,7 +82,7 @@ export const PopularBrands: React.FC = () => {
     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-gray-200">
       
       {/* Title */}
-      <div className="mb-8 pb-3 border-b border-gray-200">
+      <div className="mb-8 pb-3 border-b border-gray-200 text-center">
         <span className="text-[11px] font-extrabold tracking-widest text-[#E7000B] uppercase block mb-1 font-sans">
           TRUSTED PARTNERS
         </span>

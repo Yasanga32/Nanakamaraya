@@ -32,6 +32,9 @@ export default function Home() {
       {/* Offers Products Topic with Cards & Horizontal Arrow Navigation */}
       <OfferProducts />
 
+      {/* Popular Brands Row matching reference image */}
+      <PopularBrands />
+
       {/* Budget-Friendly Faucets & Hardware Section matching reference image */}
       <BudgetHardwareSection />
 
@@ -40,9 +43,6 @@ export default function Home() {
 
       {/* Product Catalog & Filter Section ("All Collections") */}
       <FeaturedProducts />
-
-      {/* Popular Brands Row matching reference image */}
-      <PopularBrands />
 
       {/* About Us Section matching reference image */}
       <AboutUsSection />
