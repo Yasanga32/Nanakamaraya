@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Search, UserCircle, ShoppingCart, ChevronDown, Tag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { CATEGORIES } from "@/data/categories";
@@ -29,16 +30,16 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Brand Logo */}
-        <div 
+        <Link 
+          href="/"
           className="flex items-center gap-3 cursor-pointer select-none" 
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <img 
             src="/logo.png" 
             alt="nanakamaraya.lk" 
             className="h-12 w-auto object-contain"
           />
-        </div>
+        </Link>
 
         {/* Central Search Bar */}
         <form onSubmit={handleSearchSubmit} className="flex items-center w-full md:max-w-xl bg-gray-50 border border-gray-300 rounded-md overflow-hidden shadow-xs focus-within:ring-2 focus-within:ring-red-600 focus-within:border-transparent transition-all">

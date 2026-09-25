@@ -148,18 +148,36 @@ export default function ProductDetailPage() {
       <main className="flex-1 bg-gray-50/50 py-6 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* Breadcrumbs Navigation */}
-          <nav className="flex items-center gap-2 text-xs text-gray-500 mb-6 flex-wrap">
-            <Link href="/" className="hover:text-red-700 transition-colors">Home</Link>
-            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-            <Link href="/#catalog-section" className="hover:text-red-700 transition-colors capitalize">
-              {categoryTitle}
-            </Link>
-            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-            <span className="font-semibold text-gray-900 truncate max-w-[200px] sm:max-w-none">
-              {product.name}
-            </span>
-          </nav>
+          {/* Back Button & Breadcrumbs Navigation Bar */}
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4 bg-white px-4 sm:px-6 py-3 rounded-2xl border border-gray-200/90 shadow-2xs">
+            <button
+              onClick={() => {
+                if (window.history.length > 1) {
+                  router.back();
+                } else {
+                  router.push("/");
+                }
+              }}
+              className="inline-flex items-center gap-2.5 text-xs font-extrabold text-gray-800 hover:text-red-700 transition-colors group cursor-pointer"
+            >
+              <span className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-red-700 text-gray-700 group-hover:text-white flex items-center justify-center transition-all shadow-2xs group-hover:shadow-md">
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+              </span>
+              <span className="uppercase tracking-wider">Back to Products</span>
+            </button>
+
+            <nav className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
+              <Link href="/" className="hover:text-red-700 transition-colors font-medium">Home</Link>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+              <Link href="/#catalog-section" className="hover:text-red-700 transition-colors capitalize font-medium">
+                {categoryTitle}
+              </Link>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+              <span className="font-bold text-gray-900 truncate max-w-[180px] sm:max-w-xs">
+                {product.name}
+              </span>
+            </nav>
+          </div>
 
           {/* Product Hero Block (Gallery Left + Details Right) */}
           <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
