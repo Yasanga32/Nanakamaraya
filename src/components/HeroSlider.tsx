@@ -53,20 +53,20 @@ export const HeroSlider: React.FC = () => {
         <div className="relative z-20 h-full max-w-7xl mx-auto px-8 sm:px-14 flex items-center justify-between w-full">
           
           {/* Left Text Block */}
-          <div className="max-w-xl text-white space-y-4 animate-in fade-in duration-500">
-            <h3 className="text-xl sm:text-2xl font-serif tracking-wider text-gray-300 uppercase">
+          <div className="max-w-xl text-white space-y-4 animate-in fade-in duration-500 font-poppins">
+            <h3 className="text-sm sm:text-base font-semibold tracking-widest text-[#f59e0b] uppercase font-poppins">
               {slide.title}
             </h3>
             
-            <h1 className="text-3xl sm:text-5xl font-black font-serif tracking-tight leading-none text-white drop-shadow-md">
+            <h1 className="text-3xl sm:text-5xl font-black font-poppins tracking-tight leading-tight text-white drop-shadow-md">
               <span className="text-[#b88e00] block">{slide.highlight}</span>
-              <span className="text-gray-100 text-2xl sm:text-4xl block mt-1">{slide.subtitle}</span>
+              <span className="text-gray-100 text-2xl sm:text-4xl block mt-1 font-semibold">{slide.subtitle}</span>
             </h1>
 
             <div className="pt-3">
               <button
                 onClick={() => handleHotspotClick("decorative")}
-                className="bg-[#b32727] hover:bg-[#8f1e1e] text-white px-7 py-3 rounded-xs text-xs font-extrabold uppercase tracking-widest transition-all transform hover:scale-105 shadow-lg active:scale-95"
+                className="bg-[#b32727] hover:bg-[#8f1e1e] text-white px-7 py-3 rounded-md text-xs font-bold font-poppins uppercase tracking-widest transition-all transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"
               >
                 {slide.buttonText}
               </button>
@@ -92,7 +92,7 @@ export const HeroSlider: React.FC = () => {
                   {/* Connecting Line & Tag Box matching reference image */}
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center">
                     <div className="w-8 h-[1px] bg-red-500/80" />
-                    <div className="bg-black/80 backdrop-blur-xs text-white border border-gray-700 px-3 py-1 rounded-xs text-[11px] font-sans font-medium tracking-wide whitespace-nowrap shadow-md group-hover:border-red-500 group-hover:bg-red-950/80 transition-all">
+                    <div className="bg-black/80 backdrop-blur-xs text-white border border-gray-700 px-3 py-1 rounded-md text-[11px] font-poppins font-semibold tracking-wide whitespace-nowrap shadow-md group-hover:border-red-500 group-hover:bg-red-950/80 transition-all">
                       {spot.label}
                     </div>
                   </div>
