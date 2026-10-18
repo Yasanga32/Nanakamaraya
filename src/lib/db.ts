@@ -349,13 +349,157 @@ export async function initDB() {
         }
       }
 
-      // Seed Budget Items
-      const [budgetRows]: any = await connection.query("SELECT COUNT(*) as count FROM budget_items");
-      if (Number(budgetRows[0]?.count) === 0) {
-        for (const item of SEED_BUDGET_ITEMS) {
+      // 7. Create Social Contents table
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS social_contents (
+          id VARCHAR(100) PRIMARY KEY,
+          title VARCHAR(255) NOT NULL,
+          format VARCHAR(50) NOT NULL,
+          category VARCHAR(100) NOT NULL,
+          status VARCHAR(50) NOT NULL DEFAULT 'draft',
+          language VARCHAR(50) NOT NULL DEFAULT 'English',
+          tone VARCHAR(50) NOT NULL DEFAULT 'Professional',
+          targetAudience TEXT,
+          callToAction TEXT,
+          additionalInstructions TEXT,
+          details JSON,
+          headline VARCHAR(255),
+          caption TEXT,
+          hashtags TEXT,
+          visualConcept TEXT,
+          image TEXT,
+          videoScript TEXT,
+          storyboard JSON,
+          orderStatus VARCHAR(50) DEFAULT 'not_ordered',
+          orderContactName VARCHAR(150),
+          orderContactPhone VARCHAR(50),
+          orderContactEmail VARCHAR(150),
+          orderNotes TEXT,
+          orderPackageType VARCHAR(100),
+          orderDispatchedAt TIMESTAMP NULL,
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+      `);
+
+      // Migration: Add order tracking columns to social_contents if missing
+      try {
+        await connection.query("ALTER TABLE social_contents ADD COLUMN orderStatus VARCHAR(50) DEFAULT 'not_ordered'");
+      } catch (e) {}
+      try {
+        await connection.query("ALTER TABLE social_contents ADD COLUMN orderContactName VARCHAR(150)");
+      } catch (e) {}
+      try {
+        await connection.query("ALTER TABLE social_contents ADD COLUMN orderContactPhone VARCHAR(50)");
+      } catch (e) {}
+      try {
+        await connection.query("ALTER TABLE social_contents ADD COLUMN orderContactEmail VARCHAR(150)");
+      } catch (e) {}
+      try {
+        await connection.query("ALTER TABLE social_contents ADD COLUMN orderNotes TEXT");
+      } catch (e) {}
+      try {
+        await connection.query("ALTER TABLE social_contents ADD COLUMN orderPackageType VARCHAR(100)");
+      } catch (e) {}
+      try {
+        await connection.query("ALTER TABLE social_contents ADD COLUMN orderDispatchedAt TIMESTAMP NULL");
+      } catch (e) {}
+
+      // Seed Social Contents
+      const [socialRows]: any = await connection.query("SELECT COUNT(*) as count FROM social_contents");
+      if (Number(socialRows[0]?.count) === 0) {
+        const SEED_SOCIAL = [
+          {
+            id: "social-seed-1",
+            title: "Carbon Crystal Wall Panels Promo",
+            format: "post",
+            category: "product-promotion",
+            status: "completed",
+            language: "English",
+            tone: "Luxury",
+            targetAudience: "Interior designers, architects, and luxury homeowners in Sri Lanka",
+            callToAction: "Shop now at nanakamaraya.lk or visit our Colombo showroom",
+            additionalInstructions: "Emphasize premium acoustic insulation and termite resistance",
+            details: JSON.stringify({ productName: "Carbon Crystal Wall Panels", description: "Ultra-luxury fluted interior panels with acoustic dampening", price: "Rs. 12,500 / Panel", features: "Moisture proof, termite resistant, quick click-lock installation" }),
+            headline: "Redefine Elegance with Carbon Crystal Wall Panels",
+            caption: "Transform any residential or commercial interior with our signature Carbon Crystal Wall Panels. Engineered for seamless beauty, acoustic clarity, and unmatched durability.\n\n✨ 100% Termite Resistant & Waterproof\n✨ Easy Click-Lock Installation\n✨ Available in matte walnut, slate grey, and marble veins\n\nExperience luxury hardware & surfaces crafted to elevate every room.",
+            hashtags: "#InteriorDesignLK #WallPanels #SriLankaInteriors #LuxuryLiving #Nanakamaraya #ArchitecturalHardware #HomeRenovationLK",
+            visualConcept: "Sleek editorial shot of a modern living room featuring charcoal fluted panels under warm indirect LED lighting, with gold metallic typography accents in the lower right corner.",
+            image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1200",
+            videoScript: "",
+            storyboard: JSON.stringify([])
+          },
+          {
+            id: "social-seed-2",
+            title: "Why Sri Lanka is Switching to Smart Mortise Biometric Locks",
+            format: "reel",
+            category: "new-arrivals",
+            status: "completed",
+            language: "English and Sinhala",
+            tone: "Exciting",
+            targetAudience: "Modern homeowners and villa owners looking for keyless security",
+            callToAction: "WhatsApp us at 077 123 4567 for free installation consultation",
+            additionalInstructions: "Fast-paced hooks, clear on-screen visual directions",
+            details: JSON.stringify({ productName: "Smart 3D Biometric Mortise Lock", price: "Rs. 48,500", features: "0.3s fingerprint, PIN, RFID card, Mobile app log, 12-month battery life" }),
+            headline: "Never Worry About Lost Keys Again 🔑❌",
+            caption: "Still carrying heavy key bunches? Step into the future with our Smart 3D Biometric Mortise Lock.\n\n🔓 0.3s Fingerprint Recognition\n🔢 PIN Code & Encrypted RFID Card\n📱 Mobile App Remote Unlock & Guest Access Logs\n🔋 12-Month Battery Life with Emergency USB Jumpstart\n\nUpgrade your front door today with islandwide delivery & expert installation.",
+            hashtags: "#SmartHomeLK #BiometricLocks #KeylessEntry #SriLankaSmartLiving #Nanakamaraya #HomeSecurityLK #SmartLocks",
+            visualConcept: "Fast-paced 9:16 vertical reel showing sleek black biometric handle glowing blue on contact, accompanied by quick cuts and satisfying lock sound effects.",
+            image: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=800",
+            videoScript: "Hook: Stop losing your keys in 2026! Here is why over 500 Sri Lankan homes upgraded to this biometric smart lock this month.\n\nBody: Look at this finish. Solid zinc alloy, waterproof sensor, and it unlocks in literally 0.3 seconds. Plus, if guests arrive while you're away, generate a one-time OTP right from your phone.\n\nCTA: Tap the link in our bio or DM us 'SMART' to claim free delivery across Sri Lanka!",
+            storyboard: JSON.stringify([
+              { sceneNumber: 1, duration: "0-3s", visualDescription: "Person fumbling with rusty heavy key ring outside door in the dark, looking frustrated.", onScreenText: "Still using old-school keys? 🤦‍♂️", voiceover: "Stop losing your house keys in 2026!" },
+              { sceneNumber: 2, duration: "3-7s", visualDescription: "Thumb gently touches the glowing scanner; smooth mechanical click sound as green LED halo lights up.", onScreenText: "0.3s Instant Fingerprint Unlock ⚡", voiceover: "Unlock in 0.3 seconds with precision 3D biometric recognition." },
+              { sceneNumber: 3, duration: "7-11s", visualDescription: "Close-up of sleek digital touchscreen showing visitor passcode and mobile app unlock notification.", onScreenText: "App Control & Temporary Guest Codes 📱", voiceover: "Share temporary passcodes with cleaners or guests wherever you are." },
+              { sceneNumber: 4, duration: "11-15s", visualDescription: "Wide glamour shot of modern front door with website URL & WhatsApp prompt badge overlay.", onScreenText: "Islandwide Delivery 🚚 | WhatsApp Us Today!", voiceover: "Tap the link in bio or WhatsApp us for instant islandwide delivery!" }
+            ])
+          },
+          {
+            id: "social-seed-3",
+            title: "Weekend Flash Discount - Kitchen Faucets",
+            format: "story",
+            category: "special-offers",
+            status: "draft",
+            language: "English",
+            tone: "Friendly",
+            targetAudience: "Families renovating their kitchen or pantry",
+            callToAction: "Tap the Link Sticker to claim your 20% discount coupon",
+            additionalInstructions: "Flash 48h urgency",
+            details: JSON.stringify({ offerTitle: "Weekend Kitchen Flash Sale", discount: "20% OFF", eligibleProducts: "All Pull-Down Kitchen Faucets", dates: "Saturday - Sunday" }),
+            headline: "Weekend Kitchen Upgrade Flash Sale",
+            caption: "Up to 20% OFF on all Matte Black Pull-Down Kitchen Faucets this weekend only! Use promo code KITCHEN20 at checkout.\n\nLimited stock available across Colombo & online orders.",
+            hashtags: "#KitchenDesign #FlashSaleLK #HomeRenovation #HardwareDeals",
+            visualConcept: "Vertical 9:16 story frame with animated '20% OFF' pulsing sticker in bold gold & red, a centered product hero shot with water spray demonstration, and a bottom Link Sticker widget.",
+            image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800",
+            videoScript: "",
+            storyboard: JSON.stringify([])
+          }
+        ];
+
+        for (const item of SEED_SOCIAL) {
           await connection.query(
-            "INSERT INTO budget_items (id, brandName, name, price, rating, reviewsCount, badge, image, catId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [item.id, item.brandName, item.name, item.price, item.rating || 5, item.reviewsCount || 100, item.badge || null, item.image, item.catId || null]
+            `INSERT INTO social_contents (id, title, format, category, status, language, tone, targetAudience, callToAction, additionalInstructions, details, headline, caption, hashtags, visualConcept, image, videoScript, storyboard)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              item.id,
+              item.title,
+              item.format,
+              item.category,
+              item.status,
+              item.language,
+              item.tone,
+              item.targetAudience,
+              item.callToAction,
+              item.additionalInstructions,
+              item.details,
+              item.headline,
+              item.caption,
+              item.hashtags,
+              item.visualConcept,
+              item.image,
+              item.videoScript,
+              item.storyboard
+            ]
           );
         }
       }
