@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -15,7 +15,8 @@ import {
   ChevronRight, 
   Search,
   Lock,
-  Printer
+  Printer,
+  Loader2
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Navbar } from "@/components/Navbar";
@@ -25,7 +26,7 @@ import { useAdminData } from "@/context/AdminDataContext";
 import { Product, PRODUCTS } from "@/data/products";
 import { SRI_LANKA_CITIES } from "@/data/sriLankaCities";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -770,5 +771,22 @@ export default function CheckoutPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+          <div className="flex items-center gap-2 text-sm font-bold text-gray-600">
+            <Loader2 className="w-5 h-5 animate-spin text-red-600" />
+            <span>Loading Checkout...</span>
+          </div>
+        </div>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   );
 }
