@@ -376,6 +376,7 @@ export async function initDB() {
           orderContactEmail VARCHAR(150),
           orderNotes TEXT,
           orderPackageType VARCHAR(100),
+          orderDetails JSON,
           orderDispatchedAt TIMESTAMP NULL,
           createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -400,6 +401,9 @@ export async function initDB() {
       } catch (e) {}
       try {
         await connection.query("ALTER TABLE social_contents ADD COLUMN orderPackageType VARCHAR(100)");
+      } catch (e) {}
+      try {
+        await connection.query("ALTER TABLE social_contents ADD COLUMN orderDetails JSON");
       } catch (e) {}
       try {
         await connection.query("ALTER TABLE social_contents ADD COLUMN orderDispatchedAt TIMESTAMP NULL");

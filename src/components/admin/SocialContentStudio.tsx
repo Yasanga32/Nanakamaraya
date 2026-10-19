@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useAdminData } from "@/context/AdminDataContext";
 import { ImageUploader } from "./ImageUploader";
+import { SocialOrderModal } from "./SocialOrderModal";
 import {
   Sparkles,
   Share2,
   Video,
   Layers,
-  Plus,
   Search,
   Copy,
   Check,
@@ -168,12 +168,6 @@ export const SocialContentStudio: React.FC = () => {
 
   // Order Placement Modal State
   const [orderModalItem, setOrderModalItem] = useState<SocialContentItem | null>(null);
-  const [orderContactName, setOrderContactName] = useState("");
-  const [orderContactPhone, setOrderContactPhone] = useState("");
-  const [orderContactEmail, setOrderContactEmail] = useState("");
-  const [orderPackageType, setOrderPackageType] = useState("Custom Graphic & Copy Design");
-  const [orderNotes, setOrderNotes] = useState("");
-  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
   const [orderSuccessModal, setOrderSuccessModal] = useState<any | null>(null);
 
   // Modals / Flow State
@@ -463,59 +457,6 @@ export const SocialContentStudio: React.FC = () => {
   // Order Placement Handlers
   const handleOpenOrderModal = (item: SocialContentItem) => {
     setOrderModalItem(item);
-    setOrderContactName(item.orderContactName || "");
-    setOrderContactPhone(item.orderContactPhone || "");
-    setOrderContactEmail(item.orderContactEmail || "");
-    setOrderPackageType(item.orderPackageType || (item.format === "reel" ? "Reels & Video Production Pack" : "Custom Graphic & Copy Design"));
-    setOrderNotes(item.orderNotes || "");
-  };
-
-  const handleSubmitOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!orderModalItem) return;
-
-    if (!orderContactName.trim() || !orderContactPhone.trim()) {
-      alert("Please enter your name and phone / WhatsApp number.");
-      return;
-    }
-
-    setIsSubmittingOrder(true);
-    try {
-      const res = await fetch("/api/social-content/order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contentId: orderModalItem.id,
-          contactName: orderContactName.trim(),
-          contactPhone: orderContactPhone.trim(),
-          contactEmail: orderContactEmail.trim(),
-          packageType: orderPackageType,
-          notes: orderNotes.trim()
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to submit order");
-
-      setItems(prev => prev.map(item => item.id === orderModalItem.id ? {
-        ...item,
-        orderStatus: "order_placed",
-        orderContactName: orderContactName.trim(),
-        orderContactPhone: orderContactPhone.trim(),
-        orderContactEmail: orderContactEmail.trim(),
-        orderPackageType: orderPackageType,
-        orderNotes: orderNotes.trim(),
-        orderDispatchedAt: new Date().toISOString()
-      } : item));
-
-      setOrderModalItem(null);
-      setOrderSuccessModal(data);
-      showToast(`🚀 Order placed successfully! Reference: ${data.orderId}`);
-    } catch (err: any) {
-      alert(`Order submission error: ${err.message}`);
-    } finally {
-      setIsSubmittingOrder(false);
-    }
   };
 
   // Duplicate handler
@@ -647,7 +588,7 @@ Voiceover: ${s.voiceover}
             <div>
               <h1 className="text-xl font-black text-gray-900 tracking-tight">Social Content Studio</h1>
               <p className="text-xs text-gray-500 mt-0.5">
-                Create engaging social media content for your business with AI, or order custom production from our team.
+                Place orders for custom social media designs and video reels. Our creative team designs content according to your business requirements.
               </p>
             </div>
           </div>
@@ -665,18 +606,11 @@ Voiceover: ${s.voiceover}
               tone: "Professional",
               details: {}
             })}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm hover:shadow cursor-pointer"
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm hover:shadow cursor-pointer"
             title="Place an order for professional graphic design, reels production, or campaign management"
           >
             <ShoppingCart className="w-4 h-4" />
-            <span>Order from Our Team</span>
-          </button>
-          <button
-            onClick={handleOpenCreate}
-            className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm hover:shadow cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Create Content</span>
+            <span>Place Content Order</span>
           </button>
         </div>
       </div>
@@ -845,21 +779,30 @@ Voiceover: ${s.voiceover}
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center">
-          <div className="w-14 h-14 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <Sparkles className="w-7 h-7" />
+          <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <ShoppingCart className="w-7 h-7" />
           </div>
-          <h3 className="text-base font-bold text-gray-900">No Content Found</h3>
+          <h3 className="text-base font-bold text-gray-900">No Content or Orders Found</h3>
           <p className="text-xs text-gray-500 max-w-md mx-auto mt-1 mb-5">
             {searchQuery
               ? `No social content matching "${searchQuery}". Try a different search term or clear filters.`
-              : "Start by creating your first AI-powered social media post, reel concept, or story!"}
+              : "Place an order with your business requirements and our design team will create high-converting social media creatives for you!"}
           </p>
           <button
-            onClick={handleOpenCreate}
-            className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold inline-flex items-center gap-2 transition-colors cursor-pointer"
+            onClick={() => handleOpenOrderModal({
+              id: "new-custom-order",
+              title: "Custom Social Media Content Order",
+              format: "post",
+              category: "other",
+              status: "draft",
+              language: "English",
+              tone: "Professional",
+              details: {}
+            })}
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold inline-flex items-center gap-2 transition-colors cursor-pointer shadow-sm hover:shadow"
           >
-            <Plus className="w-4 h-4" />
-            <span>Create Your First Content</span>
+            <ShoppingCart className="w-4 h-4" />
+            <span>Place Content Order</span>
           </button>
         </div>
       ) : (
@@ -2448,208 +2391,16 @@ Voiceover: ${s.voiceover}
 
       {/* ORDER PLACEMENT MODAL */}
       {orderModalItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-xs overflow-y-auto animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-xl my-auto overflow-hidden flex flex-col max-h-[92vh]">
-            
-            {/* Modal Header */}
-            <div className="p-5 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-blue-50/80 to-indigo-50/50">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-blue-600 text-white rounded-xl shadow-xs">
-                  <ShoppingCart className="w-5 h-5" />
-                </div>
-                <div>
-                  <h2 className="text-base font-black text-gray-900">
-                    Order Professional Content Creation
-                  </h2>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    Our creative team crafts high-converting graphics, reels & campaigns for you.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setOrderModalItem(null)}
-                className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-white/80 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <form onSubmit={handleSubmitOrder} className="p-6 overflow-y-auto space-y-5">
-              
-              {/* Selected Content Reference */}
-              <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between gap-3">
-                <div className="space-y-0.5 min-w-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Target Content</span>
-                  <p className="text-xs font-bold text-gray-900 truncate">
-                    {orderModalItem.title || "Custom Social Content Project"}
-                  </p>
-                  <p className="text-[11px] text-gray-500 capitalize">
-                    Format: <span className="font-semibold text-gray-700">{orderModalItem.format}</span> • Tone: <span className="font-semibold text-gray-700">{orderModalItem.tone || "Professional"}</span>
-                  </p>
-                </div>
-                <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase bg-blue-100 text-blue-700 shrink-0">
-                  {orderModalItem.orderStatus === "order_placed" ? "Re-ordering" : "New Order"}
-                </span>
-              </div>
-
-              {/* Package Selection */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-gray-800">
-                  Select Production Package <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {[
-                    {
-                      id: "Custom Graphic & Copy Design",
-                      title: "Graphics & Copy",
-                      desc: "Branded post flyer + copywriting + hashtag strategy",
-                      tag: "Most Popular"
-                    },
-                    {
-                      id: "Reels & Video Production Pack",
-                      title: "Reels & Video Production",
-                      desc: "Full video editing, animated captions & audio sync",
-                      tag: "High Engagement"
-                    },
-                    {
-                      id: "Weekly Social Campaign Pack",
-                      title: "Weekly Growth Pack",
-                      desc: "3 Post Graphics + 1 Reel + Story templates",
-                      tag: "Complete"
-                    },
-                    {
-                      id: "Custom Agency Request",
-                      title: "Custom Agency Project",
-                      desc: "Bespoke branding, photo retouching or advertising",
-                      tag: "Flexible"
-                    }
-                  ].map(pkg => (
-                    <div
-                      key={pkg.id}
-                      onClick={() => setOrderPackageType(pkg.id)}
-                      className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                        orderPackageType === pkg.id
-                          ? "border-blue-600 bg-blue-50/70 shadow-xs"
-                          : "border-gray-200 hover:border-gray-300 bg-white"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs text-gray-900">{pkg.title}</span>
-                        {pkg.tag && (
-                          <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">
-                            {pkg.tag}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-gray-500 mt-1 leading-snug">{pkg.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Contact Information */}
-              <div className="space-y-3 pt-2 border-t border-gray-100">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                  Client Contact Details
-                </h4>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Your Name / Company <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={orderContactName}
-                      onChange={e => setOrderContactName(e.target.value)}
-                      placeholder="e.g. Yasanga / Nanakamaraya"
-                      className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Phone / WhatsApp Number <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={orderContactPhone}
-                      onChange={e => setOrderContactPhone(e.target.value)}
-                      placeholder="e.g. +94 77 123 4567"
-                      className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                    Email Address <span className="text-gray-400 font-normal">(Optional)</span>
-                  </label>
-                  <input
-                    type="email"
-                    value={orderContactEmail}
-                    onChange={e => setOrderContactEmail(e.target.value)}
-                    placeholder="e.g. info@nanakamaraya.lk"
-                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                    Special Instructions / Notes / Deadlines
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={orderNotes}
-                    onChange={e => setOrderNotes(e.target.value)}
-                    placeholder="Mention specific product models, logo preferences, target delivery date, or any specific visual style you want our designers to follow..."
-                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
-                  />
-                </div>
-              </div>
-
-              {/* Company Dispatch Notice */}
-              <div className="p-3 bg-blue-50/80 rounded-xl border border-blue-200/70 text-[11px] text-blue-900 flex items-start gap-2.5">
-                <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                <div className="leading-relaxed">
-                  <span className="font-bold">Instant Order Dispatch:</span> When you place this order, it is stored in your database and securely transmitted to our company website intake system. Our team will contact you via WhatsApp to finalize assets.
-                </div>
-              </div>
-
-              {/* Footer Actions */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={() => setOrderModalItem(null)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-100 transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmittingOrder}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  {isSubmittingOrder ? (
-                    <>
-                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Sending Order...</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart className="w-4 h-4" />
-                      <span>Place Content Order 🚀</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-            </form>
-          </div>
-        </div>
+        <SocialOrderModal
+          item={orderModalItem}
+          onClose={() => setOrderModalItem(null)}
+          onSuccess={async (data) => {
+            await loadContent();
+            setOrderModalItem(null);
+            setOrderSuccessModal(data);
+            showToast(`🚀 Order placed successfully! Reference: ${data.orderId}`);
+          }}
+        />
       )}
 
       {/* ORDER SUCCESS CONFIRMATION MODAL */}
@@ -2679,6 +2430,14 @@ Voiceover: ${s.voiceover}
                 <span className="text-gray-500 font-medium">Package:</span>
                 <span className="font-semibold text-gray-800">{orderSuccessModal.orderPackage?.packageType}</span>
               </div>
+              {orderSuccessModal.orderPackage?.selectedServices && (
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500 font-medium">Services:</span>
+                  <span className="font-semibold text-blue-700 capitalize">
+                    {orderSuccessModal.orderPackage.selectedServices.map((s: string) => s.replace("_", " ")).join(", ")}
+                  </span>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <span className="text-gray-500 font-medium">Contact:</span>
                 <span className="font-semibold text-gray-800">{orderSuccessModal.orderPackage?.client?.phone}</span>
