@@ -13,7 +13,16 @@ export async function POST(req: Request) {
       contactEmail = "",
       packageType = "Standard Content Creation",
       notes = "",
-      contentSnapshot
+      contentSnapshot,
+      selectedServices = ["content_creation"],
+      contentRequirements = {},
+      contentBriefs = [],
+      referenceUploads = [],
+      boostingDetails = null,
+      onsiteShooting = null,
+      deadline = { type: "standard" },
+      pricingSummary = null,
+      orderDetails = null
     } = body;
 
     if (!contentId || !contactName || !contactPhone) {
@@ -22,6 +31,19 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    const fullOrderDetails = orderDetails || {
+      selectedServices,
+      packageType,
+      contentRequirements,
+      contentBriefs,
+      referenceUploads,
+      boostingDetails,
+      onsiteShooting,
+      deadline,
+      pricingSummary
+    };
+    const orderDetailsJson = JSON.stringify(fullOrderDetails);
 
     // Fetch existing content or create new custom order record
     let contentItem: any = null;
@@ -39,9 +61,10 @@ export async function POST(req: Request) {
                orderContactEmail = ?,
                orderPackageType = ?,
                orderNotes = ?,
+               orderDetails = ?,
                orderDispatchedAt = CURRENT_TIMESTAMP
            WHERE id = ?`,
-          [contactName, contactPhone, contactEmail, packageType, notes, contentId]
+          [contactName, contactPhone, contactEmail, packageType, notes, orderDetailsJson, contentId]
         );
       }
     }
@@ -49,19 +72,40 @@ export async function POST(req: Request) {
     if (!contentItem) {
       // Create new record for direct custom orders
       finalContentId = `social-ord-${Date.now()}`;
+      const defaultFormat = contentRequirements?.format?.toLowerCase() || "post";
+      const defaultPurpose = contentRequirements?.purpose?.toLowerCase() || "other";
+      const defaultLanguage = contentRequirements?.language || "English";
+      const defaultTone = contentRequirements?.tone || "Professional";
+
       await pool.query(
-        `INSERT INTO social_contents (id, title, format, category, status, language, tone, orderStatus, orderContactName, orderContactPhone, orderContactEmail, orderPackageType, orderNotes, orderDispatchedAt)
-         VALUES (?, ?, 'post', 'other', 'draft', 'English', 'Professional', 'order_placed', ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-        [finalContentId, `Custom Order: ${packageType}`, contactName, contactPhone, contactEmail, packageType, notes]
+        `INSERT INTO social_contents (
+          id, title, format, category, status, language, tone,
+          orderStatus, orderContactName, orderContactPhone, orderContactEmail,
+          orderPackageType, orderNotes, orderDetails, orderDispatchedAt
+        ) VALUES (?, ?, ?, ?, 'draft', ?, ?, 'order_placed', ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+        [
+          finalContentId,
+          `Custom Order: ${packageType}`,
+          defaultFormat,
+          defaultPurpose,
+          defaultLanguage,
+          defaultTone,
+          contactName,
+          contactPhone,
+          contactEmail,
+          packageType,
+          notes,
+          orderDetailsJson
+        ]
       );
       contentItem = {
         id: finalContentId,
         title: `Custom Order: ${packageType}`,
-        format: "post",
-        category: "other",
+        format: defaultFormat,
+        category: defaultPurpose,
         status: "draft",
-        language: "English",
-        tone: "Professional",
+        language: defaultLanguage,
+        tone: defaultTone,
         caption: notes || "Direct order request placed by client."
       };
     }
@@ -77,6 +121,15 @@ export async function POST(req: Request) {
       },
       packageType,
       specialInstructions: notes,
+      selectedServices,
+      contentRequirements,
+      contentBriefs,
+      referenceUploads,
+      boostingDetails,
+      onsiteShooting,
+      deadline,
+      pricingSummary,
+      orderDetails: fullOrderDetails,
       content: {
         id: contentId,
         title: contentItem.title,
