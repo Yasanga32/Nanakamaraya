@@ -8,7 +8,6 @@ import {
   Share2,
   Video,
   Layers,
-  Plus,
   Search,
   Copy,
   Check,
@@ -497,16 +496,8 @@ export const SocialContentStudio: React.FC = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit order");
 
-      setItems(prev => prev.map(item => item.id === orderModalItem.id ? {
-        ...item,
-        orderStatus: "order_placed",
-        orderContactName: orderContactName.trim(),
-        orderContactPhone: orderContactPhone.trim(),
-        orderContactEmail: orderContactEmail.trim(),
-        orderPackageType: orderPackageType,
-        orderNotes: orderNotes.trim(),
-        orderDispatchedAt: new Date().toISOString()
-      } : item));
+      // Reload fresh content library to reflect the new or updated order
+      await loadContent();
 
       setOrderModalItem(null);
       setOrderSuccessModal(data);
@@ -647,7 +638,7 @@ Voiceover: ${s.voiceover}
             <div>
               <h1 className="text-xl font-black text-gray-900 tracking-tight">Social Content Studio</h1>
               <p className="text-xs text-gray-500 mt-0.5">
-                Create engaging social media content for your business with AI, or order custom production from our team.
+                Place orders for custom social media designs and video reels. Our creative team designs content according to your business requirements.
               </p>
             </div>
           </div>
@@ -665,18 +656,11 @@ Voiceover: ${s.voiceover}
               tone: "Professional",
               details: {}
             })}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm hover:shadow cursor-pointer"
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm hover:shadow cursor-pointer"
             title="Place an order for professional graphic design, reels production, or campaign management"
           >
             <ShoppingCart className="w-4 h-4" />
-            <span>Order from Our Team</span>
-          </button>
-          <button
-            onClick={handleOpenCreate}
-            className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm hover:shadow cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Create Content</span>
+            <span>Place Content Order</span>
           </button>
         </div>
       </div>
@@ -845,21 +829,30 @@ Voiceover: ${s.voiceover}
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center">
-          <div className="w-14 h-14 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <Sparkles className="w-7 h-7" />
+          <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <ShoppingCart className="w-7 h-7" />
           </div>
-          <h3 className="text-base font-bold text-gray-900">No Content Found</h3>
+          <h3 className="text-base font-bold text-gray-900">No Content or Orders Found</h3>
           <p className="text-xs text-gray-500 max-w-md mx-auto mt-1 mb-5">
             {searchQuery
               ? `No social content matching "${searchQuery}". Try a different search term or clear filters.`
-              : "Start by creating your first AI-powered social media post, reel concept, or story!"}
+              : "Place an order with your business requirements and our design team will create high-converting social media creatives for you!"}
           </p>
           <button
-            onClick={handleOpenCreate}
-            className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold inline-flex items-center gap-2 transition-colors cursor-pointer"
+            onClick={() => handleOpenOrderModal({
+              id: "new-custom-order",
+              title: "Custom Social Media Content Order",
+              format: "post",
+              category: "other",
+              status: "draft",
+              language: "English",
+              tone: "Professional",
+              details: {}
+            })}
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold inline-flex items-center gap-2 transition-colors cursor-pointer shadow-sm hover:shadow"
           >
-            <Plus className="w-4 h-4" />
-            <span>Create Your First Content</span>
+            <ShoppingCart className="w-4 h-4" />
+            <span>Place Content Order</span>
           </button>
         </div>
       ) : (
